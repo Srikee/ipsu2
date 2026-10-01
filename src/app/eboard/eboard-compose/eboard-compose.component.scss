@@ -1,0 +1,215 @@
+:host {
+    --accent: #0284c7;
+    --page-bg: #ffffff;
+    --input-bg: #f8fafc;
+    --chip-bg: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border-light: rgba(15, 23, 42, 0.1);
+    font-family: 'Stidti', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.compose-header {
+    background: linear-gradient(135deg, #002b54 0%, #003C71 60%, #005696 100%);
+
+    .compose-toolbar {
+        --background: transparent;
+        --color: #ffffff;
+        --border-width: 0;
+        --min-height: 52px;
+        padding: max(4px, var(--ion-safe-area-top, env(safe-area-inset-top, 0px))) 6px 0;
+    }
+
+    .compose-title {
+        font-size: 17px;
+        font-weight: 700;
+    }
+}
+
+.compose-header-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    ion-icon {
+        font-size: 26px;
+    }
+
+    &:active {
+        background: rgba(255, 255, 255, 0.14);
+    }
+}
+
+.btn-submit {
+    height: 34px;
+    margin-right: 6px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #003C71;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:disabled {
+        background: rgba(255, 255, 255, 0.22);
+        color: rgba(255, 255, 255, 0.6);
+        cursor: default;
+    }
+}
+
+.compose-content {
+    --background: var(--page-bg);
+}
+
+.compose-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.compose-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+
+    .compose-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 700;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .author-text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 3px;
+        min-width: 0;
+    }
+
+    .author-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .group-badge {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 6px;
+        color: #0369a1;
+        background: rgba(2, 132, 199, 0.12);
+
+        &.staff {
+            color: #047857;
+            background: rgba(16, 185, 129, 0.14);
+        }
+    }
+}
+
+.compose-textarea {
+    flex: 1;
+    width: 100%;
+    min-height: 200px;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+
+    &::placeholder {
+        color: var(--text-muted);
+    }
+
+    &:focus {
+        border-color: var(--accent);
+    }
+}
+
+.compose-footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+
+    .community-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+        font-size: 12px;
+        line-height: 1.45;
+        color: var(--text-muted);
+
+        ion-icon {
+            flex-shrink: 0;
+            font-size: 15px;
+            margin-top: 1px;
+        }
+    }
+
+    .char-counter {
+        flex-shrink: 0;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+
+        &.over {
+            color: #ef4444;
+        }
+    }
+}
+
+:host-context(.dark) {
+    --accent: #38bdf8;
+    --page-bg: #0b1120;
+    --input-bg: #1e293b;
+    --chip-bg: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border-light: rgba(255, 255, 255, 0.08);
+
+    .compose-author .group-badge {
+        color: #7dd3fc;
+        background: rgba(56, 189, 248, 0.14);
+
+        &.staff {
+            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.16);
+        }
+    }
+}

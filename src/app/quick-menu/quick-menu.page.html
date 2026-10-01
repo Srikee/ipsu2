@@ -1,0 +1,101 @@
+<ion-header class="ion-no-border quick-header">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <button type="button" class="quick-close-btn" (click)="cancel()" [attr.aria-label]="ipsu.T('common.cancel')">
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-title>{{ ipsu.T('quick_menu.title') }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="quick-content">
+    <div class="quick-container">
+        <section class="intro-card">
+            <div class="intro-icon">
+                <ion-icon name="flash-outline"></ion-icon>
+            </div>
+            <div class="intro-copy">
+                <h1>{{ ipsu.T('quick_menu.heading') }}</h1>
+                <p>{{ ipsu.T('quick_menu.description', { count: maxSelected }) }}</p>
+            </div>
+            <span class="selection-count" [class.full]="selectedMenus.length === maxSelected">
+                {{ selectedMenus.length }}/{{ maxSelected }}
+            </span>
+        </section>
+
+        <section class="selected-card">
+            <div class="card-heading">
+                <div>
+                    <h2>{{ ipsu.T('quick_menu.selected') }}</h2>
+                    <p>{{ ipsu.T('quick_menu.drag_hint') }}</p>
+                </div>
+            </div>
+
+            <div class="selected-empty" *ngIf="selectedMenus.length === 0">
+                <ion-icon name="add-circle-outline"></ion-icon>
+                <span>{{ ipsu.T('quick_menu.empty_selected') }}</span>
+            </div>
+
+            <ion-reorder-group [disabled]="false" (ionItemReorder)="reorderSelected($event)" *ngIf="selectedMenus.length > 0">
+                <div class="selected-row" *ngFor="let item of selectedMenus; let index = index">
+                    <span class="order-number">{{ index + 1 }}</span>
+                    <div class="menu-icon" [style.background]="item.gradient">
+                        <ion-icon [name]="item.iconName"></ion-icon>
+                    </div>
+                    <span class="selected-title">{{ ipsu.Localized(item, 'title') }}</span>
+                    <button type="button" class="remove-button" (click)="removeMenu(item.id)"
+                        [attr.aria-label]="ipsu.T('quick_menu.remove')">
+                        <ion-icon name="close-circle-outline"></ion-icon>
+                    </button>
+                    <ion-reorder slot="end">
+                        <ion-icon name="reorder-three-outline"></ion-icon>
+                    </ion-reorder>
+                </div>
+            </ion-reorder-group>
+        </section>
+
+        <div class="options-skeleton" *ngIf="isLoading && sections.length === 0" aria-hidden="true">
+            <section class="option-section" *ngFor="let section of [1, 2, 3]">
+                <ion-skeleton-text [animated]="true" class="skeleton-heading"></ion-skeleton-text>
+                <div class="option-grid">
+                    <ion-skeleton-text [animated]="true" class="skeleton-option" *ngFor="let item of [1, 2, 3, 4]"></ion-skeleton-text>
+                </div>
+            </section>
+        </div>
+
+        <section class="options-empty" *ngIf="!isLoading && sections.length === 0">
+            <ion-icon name="grid-outline"></ion-icon>
+            <h2>{{ ipsu.T('quick_menu.no_options') }}</h2>
+            <p>{{ ipsu.T('quick_menu.no_options_desc') }}</p>
+        </section>
+
+        <section class="option-section" *ngFor="let section of sections">
+            <h2>{{ ipsu.Localized(section, 'title') }}</h2>
+            <div class="option-grid">
+                <button type="button" class="option-item" *ngFor="let item of section.items"
+                    [class.selected]="isSelected(item.id)" (click)="toggleMenu(item)">
+                    <span class="option-order" *ngIf="isSelected(item.id)">{{ selectedOrder(item.id) }}</span>
+                    <span class="menu-icon" [style.background]="item.gradient">
+                        <ion-icon [name]="item.iconName"></ion-icon>
+                    </span>
+                    <span class="option-title">{{ ipsu.Localized(item, 'title') }}</span>
+                    <ion-icon class="option-check" [name]="isSelected(item.id) ? 'checkmark-circle' : 'add-circle-outline'"></ion-icon>
+                </button>
+            </div>
+        </section>
+    </div>
+</ion-content>
+
+<ion-footer class="ion-no-border quick-footer">
+    <ion-toolbar>
+        <div class="footer-actions">
+            <button type="button" class="cancel-button" (click)="cancel()">{{ ipsu.T('common.cancel') }}</button>
+            <button type="button" class="save-button" (click)="save()" [disabled]="isSaving || isLoading">
+                <ion-spinner name="crescent" *ngIf="isSaving"></ion-spinner>
+                <ion-icon name="checkmark-outline" *ngIf="!isSaving"></ion-icon>
+                <span>{{ ipsu.T('quick_menu.save_selection') }}</span>
+            </button>
+        </div>
+    </ion-toolbar>
+</ion-footer>

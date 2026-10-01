@@ -1,0 +1,439 @@
+<ion-header class="ion-no-border">
+    <ion-toolbar color="psu">
+        <ion-title>{{ ipsu.T('profile.title') }}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="LoadData(true)">
+                <ion-icon slot="icon-only" name="sync-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="profile-content">
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+        <ion-refresher-content pullingIcon="chevron-down-circle-outline"></ion-refresher-content>
+    </ion-refresher>
+
+    <div *ngIf="ipsu.auth.status===true" class="profile-container">
+
+        <!-- 1. DIGITAL ID VIRTUAL CARD -->
+        <div class="virtual-card" [ngClass]="ipsu.auth.group === 'staff' ? 'staff-theme' : 'student-theme'">
+            <div class="card-bg-glow"></div>
+            <div class="card-watermark">
+                <ion-icon [name]="ipsu.auth.group === 'student' ? 'school' : 'business'"></ion-icon>
+            </div>
+
+            <!-- Card Top: Branding & Role Badge -->
+            <div class="card-top">
+                <div class="card-brand">
+                    <img src="assets/imgs/ipsu-1.png" alt="iPSU" class="brand-logo" onerror="this.style.display='none'">
+                    <span class="brand-text">DIGITAL ID</span>
+                </div>
+                <div class="card-badge" [ngClass]="ipsu.auth.group">
+                    <span *ngIf="ipsu.auth.group==='student'">
+                        <ion-icon name="school"></ion-icon> {{ ipsu.T('profile.student') }}
+                    </span>
+                    <span *ngIf="ipsu.auth.group==='staff'">
+                        <ion-icon name="briefcase"></ion-icon> {{ ipsu.T('profile.staff') }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Card Middle: Avatar & Basic Info -->
+            <div class="card-middle">
+                <div class="avatar-wrapper" (click)="openPhotoModal()" role="button" tabindex="0" [title]="ipsu.T('profile.photo_hint')">
+                    <img *ngIf="!profile.image" src="assets/imgs/no-user.png" alt="Profile" class="avatar-img">
+                    <img *ngIf="profile.image" [src]="'data:image/jpeg;base64,' + profile.image" alt="Profile" class="avatar-img">
+                    <div class="avatar-zoom-hint">
+                        <ion-icon name="search-outline"></ion-icon>
+                    </div>
+                </div>
+
+                <div class="user-meta">
+                    <!-- Student Info -->
+                    <div *ngIf="ipsu.auth.group==='student'">
+                        <h2 class="name-th">{{ ipsu.language === 'en' ? ((profile.studNameEng || profile.studSnameEng) ? ((profile.studNameEng || '') + ' ' + (profile.studSnameEng || '')) : ipsu.auth.fullname_en) : ((profile.studNameThai || ipsu.auth.fullname_th) + ' ' + (profile.studSnameThai || '')) }}</h2>
+                        <p class="name-en">{{ ipsu.language === 'en' ? (ipsu.auth.fullname_th || '') : (ipsu.auth.fullname_en || '') }}</p>
+                        <span class="sub-tag">{{ ipsu.language === 'en' ? (profile.facNameEng || ipsu.T('profile.university')) : (profile.facNameThai || ipsu.T('profile.university')) }}</span>
+                    </div>
+
+                    <!-- Staff Info -->
+                    <div *ngIf="ipsu.auth.group==='staff'">
+                        <h2 class="name-th">{{ ipsu.language === 'en' ? ((profile.staffNameEng || profile.staffSnameEng) ? ((profile.staffNameEng || '') + ' ' + (profile.staffSnameEng || '')) : ipsu.auth.fullname_en) : ((profile.staffNameThai || ipsu.auth.fullname_th) + ' ' + (profile.staffSnameThai || '')) }}</h2>
+                        <p class="name-en">{{ ipsu.language === 'en' ? (ipsu.auth.fullname_th || '') : (ipsu.auth.fullname_en || '') }}</p>
+                        <span class="sub-tag">{{ ipsu.language === 'en' ? (profile.posNameEng || profile.facNameEng || ipsu.T('profile.university')) : (profile.posNameThai || profile.facNameThai || ipsu.T('profile.university')) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Bottom: ID Number, Quick Copy & QR Code -->
+            <div class="card-bottom">
+                <div class="id-info">
+                    <span class="id-label">{{ ipsu.auth.group === 'student' ? ipsu.T('profile.student_id') : ipsu.T('profile.staff_id') }}</span>
+                    <div class="id-row">
+                        <span class="id-value">{{ profile.studentId || profile.staffId || ipsu.auth.username }}</span>
+                        <button type="button" class="btn-copy-chip" (click)="copyToClipboard(profile.studentId || profile.staffId || ipsu.auth.username, ipsu.T('profile.identity_id'))">
+                            <ion-icon name="copy-outline"></ion-icon> {{ ipsu.T('profile.copy') }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- QR Code Box in Card -->
+                <div class="qr-code-thumb" (click)="openQrModal()" role="button" tabindex="0" [title]="ipsu.T('profile.qr_hint')">
+                    <img *ngIf="qrCodeDataUrl" [src]="qrCodeDataUrl" alt="QR Code" class="qr-img">
+                    <div class="qr-scan-badge">
+                        <ion-icon name="scan-outline"></ion-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. DETAIL CARDS SECTION -->
+        <div class="details-section">
+
+            <!-- CARD A: ข้อมูลการศึกษา / สังกัด -->
+            <div class="info-card">
+                <div class="card-header-bar">
+                    <div class="icon-bubble academic">
+                        <ion-icon [name]="ipsu.auth.group === 'student' ? 'book' : 'business'"></ion-icon>
+                    </div>
+                    <span class="header-title">{{ ipsu.auth.group === 'student' ? ipsu.T('profile.academic') : ipsu.T('profile.employment') }}</span>
+                </div>
+
+                <!-- STUDENT ACADEMIC INFO -->
+                <div class="info-list" *ngIf="ipsu.auth.group==='student'">
+                    <div class="info-item" *ngIf="profile.studyLevelName">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.study_level') }}</span>
+                            <span class="value">{{ profile.studyLevelName }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="Pick(profile.degreeNameThai, profile.degreeNameEng)">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.degree') }}</span>
+                            <span class="value">{{ Pick(profile.degreeNameThai, profile.degreeNameEng) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="profile.facNameThai">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.faculty') }}</span>
+                            <span class="value">{{ ipsu.language === 'en' ? (profile.facNameEng || profile.facNameThai) : profile.facNameThai }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="Pick(profile.deptNameThai, profile.deptNameEng)">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.academic_department') }}</span>
+                            <span class="value">{{ Pick(profile.deptNameThai, profile.deptNameEng) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="RenderMajor()">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.major') }}</span>
+                            <span class="value highlight-major">{{ RenderMajor() }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="Trim(profile.minorNameThai)">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.minor') }}</span>
+                            <span class="value">{{ ipsu.language === 'en' ? Trim(profile.minorNameEng || profile.minorNameThai) : Trim(profile.minorNameThai) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="Pick(profile.studyTypeName) || CourseDuration()">
+                        <div class="item-left" *ngIf="Pick(profile.studyTypeName)">
+                            <span class="label">{{ ipsu.T('profile.study_type') }}</span>
+                            <span class="value">{{ Pick(profile.studyTypeName) }}</span>
+                        </div>
+                        <div class="item-left" *ngIf="CourseDuration()">
+                            <span class="label">{{ ipsu.T('profile.course_duration') }}</span>
+                            <span class="value">{{ CourseDuration() }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="AdmissionText() || ClassYear()">
+                        <div class="item-left" *ngIf="AdmissionText()">
+                            <span class="label">{{ ipsu.T('profile.admission') }}</span>
+                            <span class="value">{{ AdmissionText() }}</span>
+                        </div>
+                        <div class="item-left" *ngIf="ClassYear()">
+                            <span class="label">{{ ipsu.T('profile.class_year') }}</span>
+                            <span class="value">{{ ClassYear() }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="Pick(profile.statusDescThai)">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.study_status') }}</span>
+                            <span class="value">
+                                <span class="status-chip" [class.active]="profile.stillStudent === 'Y'">{{ Pick(profile.statusDescThai) }}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STAFF EMPLOYMENT INFO -->
+                <div class="info-list" *ngIf="ipsu.auth.group==='staff'">
+                    <div class="info-item" *ngIf="profile.posNameThai">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.position') }}</span>
+                            <span class="value highlight-major">{{ ipsu.language === 'en' ? (profile.posNameEng || profile.posNameThai) : profile.posNameThai }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="profile.campNameThai">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.campus') }}</span>
+                            <span class="value">{{ ipsu.language === 'en' ? (profile.campNameEng || profile.campNameThai) : profile.campNameThai }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="profile.facNameThai">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.faculty_unit') }}</span>
+                            <span class="value">{{ ipsu.language === 'en' ? (profile.facNameEng || profile.facNameThai) : profile.facNameThai }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="profile.deptNameThai">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.department') }}</span>
+                            <span class="value">{{ ipsu.language === 'en' ? (profile.deptNameEng || profile.deptNameThai) : profile.deptNameThai }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="profile.sectNameThai">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.section') }}</span>
+                            <span class="value">{{ ipsu.language === 'en' ? (profile.sectNameEng || profile.sectNameThai) : profile.sectNameThai }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="Pick(profile.unitNameThai, profile.unitNameEng)">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.unit') }}</span>
+                            <span class="value">{{ Pick(profile.unitNameThai, profile.unitNameEng) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="Pick(profile.staffTypeName)">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.staff_type') }}</span>
+                            <span class="value">{{ Pick(profile.staffTypeName) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="Pick(profile.gradNameThai)">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.education') }}</span>
+                            <span class="value">{{ Pick(profile.gradNameThai) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="info-item" *ngIf="Pick(profile.staffAcceptDate)">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.start_date') }}</span>
+                            <span class="value">
+                                {{ FormatDate(profile.staffAcceptDate) }}
+                                <span class="value-sub" *ngIf="ServiceYears()">{{ ServiceYears() }}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD B: ข้อมูลส่วนบุคคล -->
+            <div class="info-card">
+                <div class="card-header-bar">
+                    <div class="icon-bubble personal">
+                        <ion-icon name="person"></ion-icon>
+                    </div>
+                    <span class="header-title">{{ ipsu.T('profile.personal') }}</span>
+                </div>
+
+                <div class="info-list">
+                    <!-- เพศ -->
+                    <div class="info-item">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.gender') }}</span>
+                            <span class="value" *ngIf="ipsu.auth.group==='student'">
+                                {{ profile.sexCode === 'M' ? ipsu.T('profile.male') : (profile.sexCode === 'F' ? ipsu.T('profile.female') : '-') }}
+                            </span>
+                            <span class="value" *ngIf="ipsu.auth.group==='staff'">
+                                {{ ipsu.language === 'en' ? (profile.sexNameEng || profile.sexNameThai || '-') : (profile.sexNameThai || '-') }}
+                            </span>
+                        </div>
+                        <div class="item-left" *ngIf="Pick(profile.nationalityNameThai || profile.citizenNameThai)">
+                            <span class="label">{{ ipsu.T('profile.nationality') }}</span>
+                            <span class="value">{{ Pick(profile.nationalityNameThai || profile.citizenNameThai) }}</span>
+                        </div>                    </div>
+
+                    <div class="info-item" *ngIf="Pick(profile.birthDate || profile.staffBirthDate)">
+                        <div class="item-left" [class.col-half]="AgeText()">
+                            <span class="label">{{ ipsu.T('profile.birth_date') }}</span>
+                            <span class="value">{{ FormatDate(profile.birthDate || profile.staffBirthDate, hideAge && !!AgeText()) }}</span>
+                        </div>
+                        <ng-container *ngIf="AgeText()">
+                            <div class="item-left">
+                                <span class="label">{{ ipsu.T('profile.age') }}</span>
+                                <span class="value">{{ AgeText() }}</span>
+                            </div>
+                            <button type="button" class="btn-icon-action" (click)="hideAge = !hideAge" [attr.aria-label]="hideAge ? ipsu.T('profile.show_age') : ipsu.T('profile.hide_age')">
+                                <ion-icon [name]="hideAge ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
+                            </button>
+                        </ng-container>
+                    </div>
+
+                    <!-- เลขบัตรประชาชน -->
+                    <div class="info-item" *ngIf="profile.citizenId || profile.staffPersId">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.citizen_id') }}</span>
+                            <span class="value font-mono">
+                                {{ getMaskedCitizenId(profile.citizenId || profile.staffPersId) }}
+                            </span>
+                        </div>
+                        <button type="button" class="btn-icon-action" (click)="toggleCitizenId()" [attr.aria-label]="hideCitizenId ? ipsu.T('profile.show_id') : ipsu.T('profile.hide_id')">
+                            <ion-icon [name]="hideCitizenId ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
+                        </button>
+                    </div>
+
+                    <!-- ชื่อผู้ใช้กรณี Staff -->
+                    <div class="info-item" *ngIf="ipsu.auth.group==='staff' && profile.username">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.username') }}</span>
+                            <span class="value">{{ profile.username }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- CARD C: ช่องทางการติดต่อ -->
+            <div class="info-card" *ngIf="profile.email || profile.staffEmail || PhoneNumber()">
+                <div class="card-header-bar">
+                    <div class="icon-bubble contact">
+                        <ion-icon name="mail"></ion-icon>
+                    </div>
+                    <span class="header-title">{{ ipsu.T('profile.contact') }}</span>
+                </div>
+
+                <div class="info-list">
+                    <div class="info-item" *ngIf="PhoneNumber()">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T(ipsu.auth.group === 'staff' ? 'profile.work_phone' : 'profile.phone') }}</span>
+                            <span class="value">{{ PhoneNumber() }}</span>
+                        </div>
+                        <a [href]="TelLink(PhoneNumber())" class="btn-icon-action" [attr.aria-label]="ipsu.T('profile.call')">
+                            <ion-icon name="call-outline"></ion-icon>
+                        </a>
+                    </div>
+
+                    <div class="info-item" *ngIf="profile.email || profile.staffEmail">
+                        <div class="item-left">
+                            <span class="label">{{ ipsu.T('profile.email') }}</span>
+                            <span class="value email-text">{{ profile.email || profile.staffEmail }}</span>
+                        </div>
+                        <a [href]="'mailto:' + (profile.email || profile.staffEmail)" class="btn-icon-action" [attr.aria-label]="ipsu.T('profile.send_email')">
+                            <ion-icon name="paper-plane-outline"></ion-icon>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. LOGOUT BUTTON -->
+            <div class="logout-wrapper">
+                <button type="button" class="btn-modern-logout" (click)="Logout()">
+                    <ion-icon name="log-out-outline"></ion-icon>
+                    <span>{{ ipsu.T('menu.logout') }}</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</ion-content>
+
+
+<!-- 4. ENLARGED PHOTO LIGHTBOX MODAL WITH SPRING EFFECT -->
+<ion-modal [isOpen]="isPhotoModalOpen" (didDismiss)="closePhotoModal()" class="lightbox-custom-modal">
+    <ng-template>
+        <div class="photo-lightbox-modal-content" (click)="closePhotoModal()">
+            <div class="photo-lightbox-container" (click)="$event.stopPropagation()">
+                <!-- Close Button -->
+                <button type="button" class="btn-lightbox-close" (click)="closePhotoModal()" [attr.aria-label]="ipsu.T('profile.close_photo')">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+
+                <!-- Enlarged Image Frame with Glow -->
+                <div class="enlarged-avatar-frame">
+                    <div class="avatar-glow-ring"></div>
+                    <img *ngIf="!profile.image" src="assets/imgs/no-user.png" alt="Profile" class="enlarged-img">
+                    <img *ngIf="profile.image" [src]="'data:image/jpeg;base64,' + profile.image" alt="Profile" class="enlarged-img">
+                </div>
+
+                <!-- User Caption -->
+                <div class="lightbox-caption">
+                    <h3 class="caption-name">
+                        {{ (ipsu.auth.group === 'student' ? (profile.studNameThai + ' ' + (profile.studSnameThai || '')) : (profile.staffNameThai + ' ' + (profile.staffSnameThai || ''))) || ipsu.auth.fullname_th }}
+                    </h3>
+                    <span class="caption-id">
+                        {{ ipsu.auth.group === 'student' ? ipsu.T('profile.student_id_short') : ipsu.T('profile.staff_id_short') }}
+                        {{ profile.studentId || profile.staffId || ipsu.auth.username }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</ion-modal>
+
+<!-- 5. ENLARGED QR CODE PASS MODAL -->
+<ion-modal [isOpen]="isQrModalOpen" (didDismiss)="closeQrModal()" class="lightbox-custom-modal">
+    <ng-template>
+        <div class="qr-modal-content" (click)="closeQrModal()">
+            <div class="qr-modal-container" (click)="$event.stopPropagation()">
+                <!-- Close Button -->
+                <button type="button" class="btn-lightbox-close" (click)="closeQrModal()" aria-label="ปิด">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+
+                <!-- Pass Card -->
+                <div class="qr-pass-card">
+                    <div class="pass-header">
+                        <div class="pass-brand">
+                            <span class="pass-title">iPSU DIGITAL PASS</span>
+                        <span class="pass-subtitle">{{ ipsu.T('profile.university') }}</span>
+                        </div>
+                        <div class="pass-badge" [ngClass]="ipsu.auth.group">
+                            {{ ipsu.auth.group === 'student' ? 'STUDENT' : 'STAFF' }}
+                        </div>
+                    </div>
+
+                    <!-- Large QR Code Frame -->
+                    <div class="large-qr-frame">
+                        <img *ngIf="qrCodeDataUrl" [src]="qrCodeDataUrl" alt="QR Code" class="large-qr-img">
+                    </div>
+
+                    <!-- Pass Details -->
+                    <div class="pass-body">
+                        <div class="pass-id-highlight">
+                            {{ profile.studentId || profile.staffId || ipsu.auth.username }}
+                        </div>
+                        <div class="pass-user-name">
+                            {{ (ipsu.auth.group === 'student' ? (profile.studNameThai + ' ' + (profile.studSnameThai || '')) : (profile.staffNameThai + ' ' + (profile.staffSnameThai || ''))) || ipsu.auth.fullname_th }}
+                        </div>
+                        <div class="pass-notice">
+                            <ion-icon name="scan-circle-outline"></ion-icon>
+                    <span>{{ ipsu.T('profile.qr_usage') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</ion-modal>
+
+
+

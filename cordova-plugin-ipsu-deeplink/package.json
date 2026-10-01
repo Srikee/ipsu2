@@ -1,0 +1,25 @@
+{
+  "name": "cordova-plugin-ipsu-deeplink",
+  "version": "0.4.1",
+  "description": "Small Cordova deep link plugin for Ionic/Cordova. Supports Android intent links and iOS URL/Universal Link events.",
+  "main": "www/IpsuDeeplink.js",
+  "cordova": {
+    "id": "cordova-plugin-ipsu-deeplink",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "keywords": [
+    "cordova",
+    "ionic",
+    "deeplink",
+    "app-links",
+    "universal-links"
+  ],
+  "license": "MIT",
+  "engines": {
+    "cordova-android": ">=15.0.0",
+    "cordova-ios": ">=8.0.0"
+  }
+}

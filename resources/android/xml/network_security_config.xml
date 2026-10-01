@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">ipsu.pn.psu.ac.th</domain>
+        <domain includeSubdomains="true">intranet.pn.psu.ac.th</domain>
+        <domain includeSubdomains="true">hostel.pn.psu.ac.th</domain>
+        <domain includeSubdomains="true">172.18.184.205</domain>
+    </domain-config>
+</network-security-config>

@@ -1,0 +1,838 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+@import "@ionic/angular/css/palettes/dark.class.css";
+// @import "@ionic/angular/css/palettes/dark.system.css";
+
+// Android (AndroidEdgeToEdge=false) วาง WebView พ้นแถบสถานะ/ปุ่มนำทาง/รอยบากให้แล้ว
+// แต่บางเครื่องยังรายงาน env(safe-area-inset-*) ของรอยบากมา ทำให้หัวแอปเว้นซ้ำ
+// ถ้าเปิด AndroidEdgeToEdge ต้องลบกฎนี้
+html.plt-android.plt-cordova {
+    --ion-safe-area-top: 0px;
+    --ion-safe-area-bottom: 0px;
+    --ion-safe-area-left: 0px;
+    --ion-safe-area-right: 0px;
+}
+
+@font-face {
+    font-family: 'Stidti';
+    src: url('assets/fonts/Stidti.woff2') format('woff2');
+}
+
+* {
+    font-family: 'Stidti' !important;
+}
+
+.mt {
+    margin-top: 10px;
+}
+
+.ml {
+    margin-left: 10px;
+}
+
+.mr {
+    margin-right: 10px;
+}
+
+.mb {
+    margin-bottom: 10px;
+}
+
+.m-0 {
+    margin: 0px;
+}
+
+.pt {
+    padding-top: 10px;
+}
+
+.pb {
+    padding-bottom: 10px;
+}
+
+.pr {
+    padding-right: 10px;
+}
+
+.pl {
+    padding-left: 10px;
+}
+
+.p-0 {
+    padding: 0px;
+}
+
+.pt-0 {
+    padding-top: 0px;
+}
+
+.pr-0 {
+    padding-right: 0px;
+}
+
+.pb-0 {
+    padding-bottom: 0px;
+}
+
+.pl-0 {
+    padding-left: 0px;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+.border-top {
+    border-top: 1px solid #e1e1e1;
+}
+
+.border-right {
+    border-right: 1px solid #e1e1e1;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.border-left {
+    border-left: 1px solid #e1e1e1;
+}
+
+.border-none {
+    border: none;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* ==========================================================================
+   Modern Popup Dialog System (ShowConfirm & ShowAlert)
+   ========================================================================== */
+ion-alert.modern-confirm-alert {
+    --backdrop-opacity: 1;
+
+    ion-backdrop {
+        background-color: rgba(15, 23, 42, 0.55) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        opacity: 1 !important;
+    }
+
+    .alert-wrapper {
+        border-radius: 26px !important;
+        background: #ffffff !important;
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+        padding: 26px 20px 20px 20px !important;
+        max-width: 320px !important;
+        width: calc(100% - 44px) !important;
+        overflow: hidden !important;
+        border: none !important;
+    }
+
+    .alert-head {
+        padding: 0 !important;
+        margin: 0 0 6px 0 !important;
+        text-align: center !important;
+    }
+
+    /* Icon Badge above Title */
+    .alert-head::before {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 16px auto;
+        border-radius: 50%;
+        background-color: #f0f9ff;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Ccircle cx='256' cy='256' r='208' fill='none' stroke='%23005696' stroke-miterlimit='10' stroke-width='36'/%3E%3Cpath d='M200 202.29s.84-17.5 19.57-32.57C234.33 158 251.69 156 261 156c20.31 0 51 11.23 51 45.41 0 30.64-24.89 42.66-39.78 51.52-16.14 9.6-24.22 17.65-24.22 36.07' fill='none' stroke='%23005696' stroke-linecap='round' stroke-miterlimit='10' stroke-width='36'/%3E%3Ccircle cx='248' cy='360' r='18' fill='%23005696'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 30px 30px;
+        box-shadow: 0 0 0 8px rgba(224, 242, 254, 0.65), 0 8px 16px -4px rgba(0, 86, 150, 0.22);
+    }
+
+    .alert-title {
+        font-family: 'Stidti', sans-serif !important;
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1.3 !important;
+        text-align: center !important;
+    }
+
+    .alert-sub-title {
+        font-family: 'Stidti', sans-serif !important;
+        font-size: 13px !important;
+        color: #64748b !important;
+        margin: 4px 0 0 0 !important;
+        text-align: center !important;
+    }
+
+    .alert-message {
+        font-family: 'Stidti', sans-serif !important;
+        font-size: 13.5px !important;
+        color: #64748b !important;
+        line-height: 1.55 !important;
+        text-align: center !important;
+        padding: 0 !important;
+        margin: 6px 0 22px 0 !important;
+        max-height: 240px;
+    }
+
+    .alert-button-group {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 10px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        border-top: none !important;
+        width: 100% !important;
+        justify-content: stretch !important;
+    }
+
+    .alert-button {
+        flex: 1 1 50% !important;
+        min-width: 0 !important;
+        height: 44px !important;
+        border-radius: 12px !important;
+        font-family: 'Stidti', sans-serif !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        border: none !important;
+        border-top: none !important;
+        border-right: none !important;
+        border-bottom: none !important;
+        border-left: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        cursor: pointer;
+
+        .alert-button-inner {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            height: 100% !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            text-align: center !important;
+        }
+
+        &:active {
+            transform: scale(0.97) !important;
+        }
+    }
+
+    /* Cancel Button */
+    .alert-btn-cancel,
+    .alert-button[role="cancel"],
+    .alert-button:first-child:not(:only-child) {
+        background: #f1f5f9 !important;
+        border: 1px solid #e2e8f0 !important;
+
+        .alert-button-inner {
+            color: #64748b !important;
+        }
+
+        &:hover {
+            background: #e2e8f0 !important;
+            color: #334155 !important;
+        }
+    }
+
+    /* Confirm Button (Primary PSU Blue) */
+    .alert-btn-confirm,
+    .alert-button:last-child {
+        background: linear-gradient(135deg, #005696 0%, #0084d6 100%) !important;
+        box-shadow: 0 4px 14px rgba(0, 86, 150, 0.35) !important;
+
+        .alert-button-inner {
+            color: #ffffff !important;
+        }
+
+        &:hover {
+            box-shadow: 0 6px 18px rgba(0, 86, 150, 0.45) !important;
+            filter: brightness(1.05);
+        }
+    }
+
+    /* Danger / Logout Mode */
+    &.danger-alert {
+        .alert-head::before {
+            background-color: #fef2f2;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M304 96h56a40 40 0 0 1 40 40v240a40 40 0 0 1-40 40h-56' fill='none' stroke='%23ef4444' stroke-linecap='round' stroke-linejoin='round' stroke-width='36'/%3E%3Cpolyline points='208 336 288 256 208 176' fill='none' stroke='%23ef4444' stroke-linecap='round' stroke-linejoin='round' stroke-width='36'/%3E%3Cline x1='288' y1='256' x2='80' y2='256' fill='none' stroke='%23ef4444' stroke-linecap='round' stroke-linejoin='round' stroke-width='36'/%3E%3C/svg%3E");
+            box-shadow: 0 0 0 8px rgba(254, 226, 226, 0.65), 0 8px 18px -4px rgba(239, 68, 68, 0.28);
+        }
+
+        .alert-title {
+            color: #0f172a !important;
+        }
+
+        .alert-btn-danger,
+        .alert-btn-confirm,
+        .alert-button:last-child {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.38) !important;
+
+            .alert-button-inner {
+                color: #ffffff !important;
+            }
+
+            &:hover {
+                box-shadow: 0 6px 18px rgba(239, 68, 68, 0.48) !important;
+                filter: brightness(1.05);
+            }
+        }
+    }
+
+    /* Single Button Mode (ShowAlert) */
+    &.single-button-alert {
+        .alert-head::before {
+            background-color: #f0fdf4;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='none' stroke='%2316a34a' stroke-linecap='round' stroke-linejoin='round' stroke-width='36' d='M416 128L192 384l-96-96'/%3E%3C/svg%3E");
+            box-shadow: 0 0 0 8px rgba(220, 252, 231, 0.65), 0 8px 16px -4px rgba(22, 163, 74, 0.22);
+        }
+
+        .alert-button {
+            flex: 1 1 100% !important;
+            background: linear-gradient(135deg, #005696 0%, #0084d6 100%) !important;
+            box-shadow: 0 4px 14px rgba(0, 86, 150, 0.35) !important;
+
+            .alert-button-inner {
+                color: #ffffff !important;
+            }
+        }
+    }
+}
+
+/* Dark Theme Support */
+body.dark {
+    ion-alert.modern-confirm-alert {
+        .alert-wrapper {
+            background: #1e293b !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+        }
+
+        .alert-title {
+            color: #f8fafc !important;
+        }
+
+        .alert-sub-title,
+        .alert-message {
+            color: #94a3b8 !important;
+        }
+
+        .alert-btn-cancel,
+        .alert-button[role="cancel"],
+        .alert-button:first-child:not(:only-child) {
+            background: #334155 !important;
+            border-color: #475569 !important;
+
+            .alert-button-inner {
+                color: #cbd5e1 !important;
+            }
+
+            &:hover {
+                background: #475569 !important;
+            }
+        }
+
+        &.danger-alert .alert-head::before {
+            background-color: rgba(239, 68, 68, 0.15) !important;
+            box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.1) !important;
+        }
+
+        &:not(.danger-alert):not(.single-button-alert) .alert-head::before {
+            background-color: rgba(0, 86, 150, 0.2) !important;
+            box-shadow: 0 0 0 8px rgba(0, 86, 150, 0.12) !important;
+        }
+    }
+}
+
+/* หน้าตั้ง/ยืนยันรหัส PIN ให้เต็มจอทุกขนาดหน้าจอ */
+ion-modal.lock-pin-modal {
+    --width: 100%;
+    --height: 100%;
+    --border-radius: 0;
+}
+
+/* ==========================================================================
+   Full-screen Lightbox Custom Modal (Photo & QR Code Pass)
+   Real ion-backdrop with deep frosted blur (blur: 24px)
+   ========================================================================== */
+ion-modal.lightbox-custom-modal {
+    --background: transparent;
+    --backdrop-opacity: 1;
+    --box-shadow: none;
+    --border-radius: 0;
+    --width: 100%;
+    --height: 100%;
+
+    &::part(backdrop) {
+        display: block !important;
+        background-color: rgba(15, 20, 32, 0.55) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+
+    &::part(content) {
+        background: transparent;
+        box-shadow: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+        contain: none !important;
+    }
+
+    ion-backdrop {
+        display: block !important;
+        background-color: rgba(15, 20, 32, 0.55) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+
+
+    .modal-wrapper {
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        overflow: visible !important;
+        contain: none !important;
+    }
+}
+
+/* Term picker popup shared by schedule, schedule-exam and grade pages (rendered outside page scope). */
+ion-modal.term-picker-modal {
+    .term-modal-dialog {
+        width: 380px;
+        max-width: calc(100% - 20px);
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 25px 60px -12px rgba(0, 34, 68, 0.4), 0 0 1px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        animation: modalPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        display: flex;
+        flex-direction: column;
+        margin: auto;
+
+        // Header (Compact Height & Clean Single Line Subtitle)
+        .term-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px 12px 18px;
+            position: relative;
+            border-bottom: 1px solid #f1f5f9;
+
+            .header-icon-badge {
+                width: 38px;
+                height: 38px;
+                border-radius: 12px;
+                background: linear-gradient(135deg, #003366 0%, #005696 100%);
+                color: #ffffff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 19px;
+                flex-shrink: 0;
+                box-shadow: 0 3px 10px rgba(0, 51, 102, 0.2);
+            }
+
+            .header-text-group {
+                flex: 1;
+                min-width: 0;
+
+                .modal-title {
+                    margin: 0;
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: #0f172a;
+                    letter-spacing: -0.2px;
+                    line-height: 1.25;
+                }
+
+                .modal-subtitle {
+                    margin: 2px 0 0 0;
+                    font-size: 12px;
+                    color: #64748b;
+                    line-height: 1.3;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+
+            .btn-modal-close {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background: #f1f5f9;
+                color: #64748b;
+                border: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                flex-shrink: 0;
+
+                &:active {
+                    background: #e2e8f0;
+                    color: #0f172a;
+                    transform: scale(0.92);
+                }
+            }
+        }
+
+        // Body (Compact Vertical Spacing & Ample Horizontal Space)
+        .term-modal-body {
+            padding: 12px 16px 6px 16px;
+            max-height: 52vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+
+            .term-option-card {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 14px;
+                border-radius: 14px;
+                background: #ffffff;
+                border: 1.5px solid #e2e8f0;
+                margin-bottom: 8px;
+                cursor: pointer;
+                transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                position: relative;
+
+                .card-icon-box {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 11px;
+                    background: #f8fafc;
+                    color: #64748b;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 18px;
+                    flex-shrink: 0;
+                    transition: all 0.2s ease;
+                }
+
+                .card-info-box {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2px;
+                    min-width: 0;
+                    margin-right: 8px; // Guaranteed safety buffer before checkmark
+
+                    .card-title-row {
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        min-width: 0;
+
+                        .card-term-title {
+                            font-size: 14px;
+                            font-weight: 700;
+                            color: #1e293b;
+                            letter-spacing: -0.2px;
+                            white-space: nowrap;
+                            flex-shrink: 0;
+                        }
+
+                        .badge-latest {
+                            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                            color: #ffffff;
+                            font-size: 10px;
+                            font-weight: 700;
+                            padding: 1.5px 6.5px;
+                            border-radius: 6px;
+                            letter-spacing: 0.1px;
+                            flex-shrink: 0;
+                            line-height: 1.25;
+                            white-space: nowrap;
+                        }
+                    }
+
+                    .card-meta-row {
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                        font-size: 11.5px;
+                        color: #64748b;
+                        white-space: nowrap;
+
+                        ion-icon {
+                            font-size: 13px;
+                            color: #94a3b8;
+                        }
+                    }
+                }
+
+                .card-check-box {
+                    margin-left: auto;
+                    flex-shrink: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .check-dot {
+                        width: 22px;
+                        height: 22px;
+                        border-radius: 50%;
+                        background: linear-gradient(135deg, #005696 0%, #0284c7 100%);
+                        color: #ffffff;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 14px;
+                        box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+                        animation: popScale 0.2s ease;
+                    }
+
+                    .uncheck-dot {
+                        width: 18px;
+                        height: 18px;
+                        border-radius: 50%;
+                        border: 1.5px solid #cbd5e1;
+                        background: transparent;
+                        transition: border-color 0.2s ease;
+                    }
+                }
+
+                &:hover {
+                    border-color: #cbd5e1;
+                    background: #f8fafc;
+                }
+
+                &:active {
+                    transform: scale(0.985);
+                }
+
+                // Selected Active Card Style
+                &.selected {
+                    background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
+                    border-color: #0284c7;
+                    box-shadow: 0 3px 10px rgba(2, 132, 199, 0.12);
+
+                    .card-icon-box {
+                        background: #003366;
+                        color: #ffffff;
+                    }
+
+                    .card-info-box .card-title-row .card-term-title {
+                        color: #003366;
+                    }
+
+                    .card-info-box .card-meta-row {
+                        color: #0284c7;
+                        font-weight: 500;
+
+                        ion-icon {
+                            color: #0284c7;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Footer (Compact Height)
+        .term-modal-footer {
+            padding: 4px 16px 14px 16px;
+
+            .btn-cancel-modal {
+                width: 100%;
+                height: 38px;
+                border-radius: 11px;
+                background: #f1f5f9;
+                color: #475569;
+                font-size: 14px;
+                font-weight: 600;
+                border: none;
+                cursor: pointer;
+                transition: all 0.2s ease;
+
+                &:active {
+                    background: #e2e8f0;
+                    transform: scale(0.98);
+                }
+            }
+        }
+    }
+}
+
+ion-modal.term-picker-modal.dark-theme {
+    .term-modal-dialog {
+        background: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.78);
+
+        .term-modal-header {
+            border-bottom-color: rgba(255, 255, 255, 0.07);
+
+            .header-text-group {
+                .modal-title {
+                    color: #f8fafc;
+                }
+
+                .modal-subtitle {
+                    color: #94a3b8;
+                }
+            }
+
+            .btn-modal-close {
+                background: #334155;
+                color: #cbd5e1;
+            }
+        }
+
+        .term-modal-body .term-option-card {
+            background: #263447;
+            border-color: rgba(255, 255, 255, 0.08);
+
+            .card-icon-box {
+                background: #334155;
+                color: #cbd5e1;
+            }
+
+            .card-info-box {
+                .card-title-row .card-term-title {
+                    color: #f8fafc;
+                }
+
+                .card-meta-row {
+                    color: #94a3b8;
+
+                    ion-icon {
+                        color: #64748b;
+                    }
+                }
+            }
+
+            .card-check-box .uncheck-dot {
+                border-color: #64748b;
+            }
+
+            &:hover {
+                background: #2d3b50;
+                border-color: #475569;
+            }
+
+            &.selected {
+                background: #172554;
+                border-color: #38bdf8;
+                box-shadow: none;
+
+                .card-icon-box {
+                    background: #0284c7;
+                    color: #ffffff;
+                }
+
+                .card-info-box {
+                    .card-title-row .card-term-title {
+                        color: #e0f2fe;
+                    }
+
+                    .card-meta-row,
+                    .card-meta-row ion-icon {
+                        color: #7dd3fc;
+                    }
+                }
+            }
+        }
+
+        .term-modal-footer .btn-cancel-modal {
+            background: #334155;
+            color: #e2e8f0;
+        }
+    }
+}
+
+@keyframes modalPopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.92) translateY(12px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes popScale {
+    0% {
+        transform: scale(0.6);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+

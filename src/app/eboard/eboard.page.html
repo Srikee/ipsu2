@@ -1,0 +1,95 @@
+<ion-header class="ion-no-border eboard-header">
+    <ion-toolbar class="eboard-toolbar">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/tabs/home" text="" icon="arrow-back" class="btn-back">
+            </ion-back-button>
+        </ion-buttons>
+
+        <ion-title class="page-title">
+            <span class="main-title">{{ ipsu.T('eboard.title') }}</span>
+            <span class="sub-title">{{ ipsu.T('eboard.subtitle') }}</span>
+        </ion-title>
+
+        <ion-buttons slot="end" class="header-actions" *ngIf="ipsu.auth.status">
+            <button type="button" class="profile-header-action" (click)="Refresh()" [class.spinning]="isLoading"
+                [attr.aria-label]="ipsu.T('common.refresh')">
+                <ion-icon name="sync-outline"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+
+</ion-header>
+
+<ion-content [fullscreen]="true" class="eboard-content">
+    <ion-refresher slot="fixed" (ionRefresh)="LoadFeed($event)" *ngIf="ipsu.auth.status">
+        <ion-refresher-content pullingIcon="chevron-down-circle-outline" refreshingSpinner="crescent">
+        </ion-refresher-content>
+    </ion-refresher>
+
+    <div class="feed-container" *ngIf="ipsu.auth.status">
+        <button type="button" class="compose-prompt" (click)="Compose()">
+            <span class="compose-avatar" [style.background]="eboard.AvatarColor({ name_th: ipsu.auth.fullname_th, name_en: ipsu.auth.fullname_en })">
+                <img *ngIf="eboard.AuthorImage({ is_owner: true }) as image; else myInitial" [src]="image" alt="">
+                <ng-template #myInitial>{{ eboard.AuthorInitial({ name_th: ipsu.auth.fullname_th, name_en: ipsu.auth.fullname_en }) }}</ng-template>
+            </span>
+            <span class="compose-placeholder">{{ ipsu.T('eboard.compose_placeholder') }}</span>
+            <ion-icon name="create-outline" class="compose-icon"></ion-icon>
+        </button>
+
+        <div class="feed-skeleton" *ngIf="!isLoaded && isLoading" aria-hidden="true">
+            <div class="skeleton-card" *ngFor="let item of [1, 2, 3]">
+                <div class="skeleton-head">
+                    <ion-skeleton-text [animated]="true" class="skeleton-avatar"></ion-skeleton-text>
+                    <div class="skeleton-lines">
+                        <ion-skeleton-text [animated]="true" style="width: 46%"></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true" style="width: 30%"></ion-skeleton-text>
+                    </div>
+                </div>
+                <ion-skeleton-text [animated]="true" style="width: 96%"></ion-skeleton-text>
+                <ion-skeleton-text [animated]="true" style="width: 82%"></ion-skeleton-text>
+                <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+            </div>
+        </div>
+
+        <app-eboard-post-card *ngFor="let post of allPosts; trackBy: TrackPost" [post]="post"
+            (open)="OpenPost($event)"></app-eboard-post-card>
+
+        <section class="feed-empty" *ngIf="isLoaded && allPosts.length === 0">
+            <div class="empty-icon-box">
+                <ion-icon name="chatbubbles-outline"></ion-icon>
+            </div>
+            <h3>{{ ipsu.T('eboard.empty_title') }}</h3>
+            <p>{{ ipsu.T('eboard.empty_description') }}</p>
+            <button type="button" class="btn-empty-post" (click)="Compose()">
+                <ion-icon name="add"></ion-icon>
+                <span>{{ ipsu.T('eboard.new_post') }}</span>
+            </button>
+        </section>
+
+        <p class="feed-end" *ngIf="isLoaded && !hasMore && allPosts.length > 0">{{ ipsu.T('eboard.end_of_feed') }}</p>
+    </div>
+
+    <ion-infinite-scroll *ngIf="ipsu.auth.status" [disabled]="!hasMore" (ionInfinite)="LoadMore($event)">
+        <ion-infinite-scroll-content loadingSpinner="crescent"></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
+    <div class="guest-wrap" *ngIf="!ipsu.auth.status">
+        <div class="guest-card">
+            <div class="guest-icon-box">
+                <ion-icon name="chatbubbles-outline"></ion-icon>
+            </div>
+            <h3>{{ ipsu.T('eboard.login_title') }}</h3>
+            <p>{{ ipsu.T('eboard.login_description') }}</p>
+            <button type="button" class="btn-guest-login" (click)="PromptLogin()">
+                <ion-icon name="log-in-outline"></ion-icon>
+                <span>{{ ipsu.T('menu.login') }}</span>
+            </button>
+        </div>
+    </div>
+
+    <button type="button" slot="fixed" class="eboard-fab" *ngIf="ipsu.auth.status" (click)="Compose()"
+        [attr.aria-label]="ipsu.T('eboard.compose_title')">
+        <ion-icon name="add"></ion-icon>
+        <span>{{ ipsu.T('eboard.new_post') }}</span>
+    </button>
+</ion-content>

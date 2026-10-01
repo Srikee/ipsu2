@@ -1,0 +1,56 @@
+<article class="post-card" [class.is-pinned]="post.is_pinned" [class.is-hidden]="post.status === 'hidden'"
+    [class.is-full]="full">
+    <div class="post-flags" *ngIf="post.is_pinned || post.status === 'hidden'">
+        <span class="post-flag flag-pin" *ngIf="post.is_pinned">
+            <ion-icon name="pin"></ion-icon>{{ ipsu.T('eboard.pinned') }}
+        </span>
+        <span class="post-flag flag-hidden" *ngIf="post.status === 'hidden'">
+            <ion-icon name="eye-off"></ion-icon>{{ ipsu.T('eboard.hidden') }}
+        </span>
+    </div>
+
+    <header class="post-head">
+        <div class="post-avatar" [style.background]="eboard.AvatarColor(post.author)">
+            <img *ngIf="eboard.AuthorImage(post) as image; else initial" [src]="image" alt="">
+            <ng-template #initial><span>{{ eboard.AuthorInitial(post.author) }}</span></ng-template>
+        </div>
+
+        <div class="post-author">
+            <div class="author-row">
+                <span class="author-name">{{ eboard.AuthorName(post.author) }}</span>
+                <span class="group-badge" [class.staff]="post.author.group === 'staff'">
+                    {{ eboard.GroupLabel(post.author.group) }}
+                </span>
+            </div>
+            <div class="meta-row">
+                <span class="meta-time">{{ eboard.TimeAgo(post.created_when) }}</span>
+                <ng-container *ngIf="post.edited_when">
+                    <span class="meta-dot">•</span>
+                    <span class="meta-edited">{{ ipsu.T('eboard.edited') }}</span>
+                </ng-container>
+            </div>
+        </div>
+
+        <button type="button" class="btn-post-more" (click)="OpenMenu($event)"
+            [attr.aria-label]="ipsu.T('eboard.menu_title')">
+            <ion-icon name="ellipsis-horizontal"></ion-icon>
+        </button>
+    </header>
+
+    <div class="post-body" (click)="OpenPost()">
+        <p class="post-text" [class.clamped]="!full">{{ post.content }}</p>
+        <span class="see-more" *ngIf="!full && isLong">{{ ipsu.T('eboard.see_more') }}</span>
+    </div>
+
+    <footer class="post-actions">
+        <button type="button" class="post-action" [class.liked]="post.liked" (click)="ToggleLike($event)"
+            [attr.aria-pressed]="post.liked">
+            <ion-icon [name]="post.liked ? 'heart' : 'heart-outline'"></ion-icon>
+            <span>{{ post.like_count > 0 ? post.like_count : ipsu.T('eboard.like') }}</span>
+        </button>
+        <button type="button" class="post-action" (click)="OpenPost()">
+            <ion-icon name="chatbubble-outline"></ion-icon>
+            <span>{{ post.comment_count > 0 ? post.comment_count : ipsu.T('eboard.comment') }}</span>
+        </button>
+    </footer>
+</article>

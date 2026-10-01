@@ -1,0 +1,161 @@
+<ion-header class="ion-no-border scholarship-header">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/tabs/information" text="" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ ipsu.T('scholarship.title') }}</ion-title>
+        <ion-buttons slot="end" class="header-actions">
+            <button type="button" class="term-dropdown" (click)="openTermPicker()" [disabled]="isLoading">
+                <span>{{ activeTerm }}</span>
+                <ion-icon name="chevron-down-outline"></ion-icon>
+            </button>
+            <ion-button type="button" fill="clear" class="refresh-btn" (click)="LoadData(false)"
+                [class.spinning]="isLoading" [attr.aria-label]="ipsu.T('scholarship.refresh')">
+                <ion-icon slot="icon-only" name="sync-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="scholarship-content">
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)" *ngIf="ipsu.auth.status">
+        <ion-refresher-content pullingIcon="chevron-down-circle-outline" refreshingSpinner="crescent"></ion-refresher-content>
+    </ion-refresher>
+
+    <main class="container" *ngIf="ipsu.auth.status">
+        <!-- Main Tab Filter -->
+        <section class="tab-filter" *ngIf="hasLoadedData">
+            <button type="button" class="tab-item" [class.active]="activeTab === tab.id"
+                    (click)="selectTab(tab.id)" *ngFor="let tab of tabs">
+                {{ tab.label }}
+            </button>
+        </section>
+
+        <!-- Dashboard Card - แสดงเฉพาะ PSU EARNS -->
+        <section class="dashboard-card" *ngIf="hasLoadedData && activeTab === 'earns'">
+            <div class="dashboard-grid">
+                <div class="dash-item">
+                    <span class="dash-value">{{ totalAvailable() }}</span>
+                    <span class="dash-label">{{ ipsu.T('scholarship.available') }}</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-value">{{ totalHours() }}</span>
+                    <span class="dash-label">{{ ipsu.T('scholarship.total_hours') }}</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-value">{{ formatEarnings() }}</span>
+                    <span class="dash-label">{{ ipsu.T('scholarship.earnings') }}</span>
+                </div>
+                <div class="dash-divider"></div>
+                <div class="dash-item">
+                    <span class="dash-value">{{ pendingHours() }}</span>
+                    <span class="dash-label">{{ ipsu.T('scholarship.pending_hours') }}</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sub Tabs - Active / Completed -->
+        <section class="sub-tab-filter" *ngIf="hasLoadedData && activeTab === 'earns'">
+            <button type="button" class="sub-tab-item" [class.active]="true"
+                    (click)="selectSubTab('active')">
+                <span>{{ subTabs[0].label }}</span>
+                <span class="sub-tab-count">{{ subTabs[0].count() }}</span>
+            </button>
+            <button type="button" class="sub-tab-item" [class.active]="false"
+                    (click)="selectSubTab('completed')">
+                <span>{{ subTabs[1].label }}</span>
+                <span class="sub-tab-count">{{ subTabs[1].count() }}</span>
+            </button>
+        </section>
+
+        <!-- Skeleton Loading -->
+        <section class="skeleton-list" *ngIf="isLoading && !hasLoadedData" aria-hidden="true">
+            <div class="card-skeleton" *ngFor="let item of [1, 2]">
+                <ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text>
+                <ion-skeleton-text [animated]="true" style="width: 100%"></ion-skeleton-text>
+                <ion-skeleton-text [animated]="true" style="width: 45%"></ion-skeleton-text>
+            </div>
+        </section>
+
+        <!-- Active Work Cards (PSU EARNS) -->
+        <section class="list-section" *ngIf="hasLoadedData && activeTab === 'earns' && activeScholarships().length > 0">
+            <article class="work-card active-card" *ngFor="let item of activeScholarships(); trackBy: trackById">
+                <div class="card-header">
+                    <span class="type-tag earns-tag">
+                        <ion-icon name="time-outline"></ion-icon>
+                        PSU EARNS
+                    </span>
+                    <span class="hours-badge">
+                        <ion-icon name="clock-outline"></ion-icon>
+                        {{ formatHours(item.total_hours) }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <h3 class="job-title">{{ item.job_title }}</h3>
+                    <p class="job-desc">{{ item.job_description }}</p>
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="detail-btn" (click)="viewDetails(item)">
+                        <ion-icon name="ellipsis-horizontal-circle-outline"></ion-icon>
+                        {{ ipsu.T('scholarship.view_details') }}
+                    </button>
+                </div>
+            </article>
+        </section>
+
+        <!-- Empty State - PSU EARNS ไม่มีข้อมูล -->
+        <section class="empty-state" *ngIf="hasLoadedData && activeTab === 'earns' && activeScholarships().length === 0 && completedScholarships().length === 0">
+            <div class="empty-icon">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" fill="#f0f2f5"/>
+                    <rect x="30" y="35" width="40" height="30" rx="4" fill="#7c3aed" opacity="0.2"/>
+                    <circle cx="40" cy="50" r="3" fill="#7c3aed"/>
+                    <circle cx="60" cy="50" r="3" fill="#7c3aed"/>
+                    <path d="M 38 58 Q 50 65 62 58" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h2>{{ ipsu.T('scholarship.empty_earns_title') }}</h2>
+            <p>{{ ipsu.T('scholarship.empty_earns_desc') }}</p>
+        </section>
+
+        <!-- Empty State - ทุนอื่นๆ -->
+        <section class="empty-state" *ngIf="hasLoadedData && activeTab === 'other'">
+            <div class="empty-icon">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" fill="#f0f2f5"/>
+                    <rect x="25" y="40" width="50" height="25" rx="5" fill="#64748b" opacity="0.2"/>
+                    <line x1="35" y1="48" x2="65" y2="48" stroke="#64748b" stroke-width="2" opacity="0.3"/>
+                    <line x1="35" y1="55" x2="55" y2="55" stroke="#64748b" stroke-width="2" opacity="0.3"/>
+                </svg>
+            </div>
+            <h2>{{ ipsu.T('scholarship.empty_other_title') }}</h2>
+            <p>{{ ipsu.T('scholarship.empty_other_desc') }}</p>
+        </section>
+
+        <!-- Error State -->
+        <section class="state-card error" *ngIf="!isLoading && loadError && hasLoadedData">
+            <div class="state-icon"><ion-icon name="cloud-offline-outline"></ion-icon></div>
+            <h2>{{ ipsu.T('scholarship.error_title') }}</h2>
+            <p>{{ ipsu.T('scholarship.error_desc') }}</p>
+            <button type="button" (click)="LoadData(true)">
+                <ion-icon name="refresh-outline"></ion-icon>
+                {{ ipsu.T('common.try_again') }}
+            </button>
+        </section>
+    </main>
+
+    <!-- Guest State -->
+    <div class="guest-wrap" *ngIf="!ipsu.auth.status">
+        <section class="state-card">
+            <div class="state-icon"><ion-icon name="lock-closed-outline"></ion-icon></div>
+            <h2>{{ ipsu.T('scholarship.login_title') }}</h2>
+            <p>{{ ipsu.T('scholarship.login_desc') }}</p>
+            <button type="button" (click)="promptLogin()">
+                <ion-icon name="log-in-outline"></ion-icon>
+                {{ ipsu.T('menu.login') }}
+            </button>
+        </section>
+    </div>
+</ion-content>

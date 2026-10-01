@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-ipsu-deeplink"
+        version="0.4.1">
+
+    <name>IPSU Deeplink</name>
+    <description>Small Cordova deep link plugin for Ionic/Cordova.</description>
+    <license>MIT</license>
+    <keywords>cordova,ionic,deeplink,app-links,universal-links</keywords>
+
+    <engines>
+        <engine name="cordova-android" version=">=15.0.0" />
+        <engine name="cordova-ios" version=">=8.0.0" />
+    </engines>
+
+    <preference name="URL_SCHEME" default="ipsu" />
+    <preference name="DEEPLINK_SCHEME" default="https" />
+    <preference name="DEEPLINK_HOST" default="ipsu.pn.psu.ac.th" />
+    <preference name="ANDROID_PATH_PREFIX" default="/callback" />
+
+    <js-module src="www/IpsuDeeplink.js" name="IpsuDeeplink">
+        <clobbers target="IpsuDeeplink" />
+    </js-module>
+
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="IpsuDeeplink">
+                <param name="android-package" value="com.ipsu.cordova.deeplink.IpsuDeeplink" />
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application/activity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="$URL_SCHEME" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="$DEEPLINK_SCHEME"
+                      android:host="$DEEPLINK_HOST"
+                      android:pathPrefix="$ANDROID_PATH_PREFIX" />
+            </intent-filter>
+        </config-file>
+
+        <source-file src="src/android/IpsuDeeplink.java" target-dir="app/src/main/java/com/ipsu/cordova/deeplink" />
+    </platform>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="IpsuDeeplink">
+                <param name="ios-package" value="IpsuDeeplink" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="CFBundleURLTypes">
+            <array>
+                <dict>
+                    <key>CFBundleURLName</key>
+                    <string>$PACKAGE_NAME</string>
+                    <key>CFBundleURLSchemes</key>
+                    <array>
+                        <string>$URL_SCHEME</string>
+                    </array>
+                </dict>
+            </array>
+        </config-file>
+
+        <!-- For Universal Links, confirm this is written into the app entitlements after prepare/build. -->
+        <config-file target="*.entitlements" parent="com.apple.developer.associated-domains">
+            <array>
+                <string>applinks:$DEEPLINK_HOST</string>
+            </array>
+        </config-file>
+
+        <header-file src="src/ios/IpsuDeeplink.h" />
+        <source-file src="src/ios/IpsuDeeplink.m" />
+        <source-file src="src/ios/IpsuDeeplinkHooks.m" />
+    </platform>
+</plugin>

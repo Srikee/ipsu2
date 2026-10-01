@@ -1,0 +1,36 @@
+<ion-tabs>
+    <ion-tab-bar slot="bottom" color="psu" *ngIf="!ipsu.isMessageSelectionMode">
+        <ion-tab-button tab="home">
+            <ion-icon name="home"></ion-icon>
+            <ion-label>{{ ipsu.T('tabs.home') }}</ion-label>
+        </ion-tab-button>
+        <ion-tab-button tab="message" class="message-tab-button">
+            <ion-icon name="mail"></ion-icon>
+            <ion-label>{{ ipsu.T('tabs.message') }}</ion-label>
+            <ion-badge *ngIf="ipsu.unreadMessageCount > 0" color="danger">
+                {{ ipsu.unreadMessageCount > 99 ? '99+' : ipsu.unreadMessageCount }}
+            </ion-badge>
+        </ion-tab-button>
+        <ion-tab-button (click)="OpenEboard()">
+            <ion-icon name="easel-outline"></ion-icon>
+            <ion-label>{{ ipsu.T('tabs.eboard') }}</ion-label>
+        </ion-tab-button>
+        <ion-tab-button tab="information">
+            <ion-icon name="information-circle"></ion-icon>
+            <ion-label>{{ ipsu.T('tabs.information') }}</ion-label>
+        </ion-tab-button>
+        <ion-tab-button tab="profile" class="tab-profile-button">
+            <!-- If logged in with custom image -->
+            <div *ngIf="ipsu.auth.status && ipsu.auth.image" class="tab-avatar-wrapper">
+                <img [src]="'data:image/jpeg;base64,' + ipsu.auth.image" alt="Profile" class="tab-avatar-img">
+            </div>
+            <!-- If logged in without custom image -->
+            <div *ngIf="ipsu.auth.status && !ipsu.auth.image" class="tab-avatar-wrapper fallback-avatar">
+                <img src="assets/imgs/no-user.png" alt="Profile" class="tab-avatar-img">
+            </div>
+            <!-- If not logged in -->
+            <ion-icon *ngIf="!ipsu.auth.status" name="person-outline"></ion-icon>
+            <ion-label>{{ ipsu.T('tabs.profile') }}</ion-label>
+        </ion-tab-button>
+    </ion-tab-bar>
+</ion-tabs>

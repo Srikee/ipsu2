@@ -1,0 +1,218 @@
+<ion-header class="ion-no-border schedule-header">
+    <ion-toolbar class="schedule-toolbar">
+        <!-- Back Button -->
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/tabs/information" text="" icon="arrow-back" class="btn-back">
+            </ion-back-button>
+        </ion-buttons>
+
+        <!-- Page Title -->
+        <ion-title class="schedule-title">
+            <span>{{ ipsu.T('schedule.title') }}</span>
+        </ion-title>
+
+        <!-- Right: Term/Year Picker & Refresh Button -->
+        <ion-buttons slot="end" class="header-right-actions">
+            <!-- Term/Year Dropdown Picker -->
+            <button type="button" class="btn-term-picker" (click)="openTermPicker()" [disabled]="isLoading"
+                [attr.aria-label]="ipsu.T('schedule.choose_term')" [title]="ipsu.T('schedule.choose_term')">
+                <span class="term-text">{{ eduTerm ? (eduTerm + '/' + eduYear) : ipsu.T('schedule.choose_year_term') }}</span>
+                <ion-icon name="chevron-down-outline" class="term-arrow"></ion-icon>
+            </button>
+
+            <!-- Refresh Button -->
+            <button type="button" class="profile-header-action btn-refresh" (click)="LoadData(true)" [class.spinning]="isLoading"
+                [attr.aria-label]="ipsu.T('schedule.refresh')" [title]="ipsu.T('common.refresh')">
+                <ion-icon name="sync-outline"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="schedule-content">
+
+    <!-- Native Pull-To-Refresh -->
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)" *ngIf="ipsu.auth.status">
+        <ion-refresher-content pullingIcon="chevron-down-circle-outline" refreshingSpinner="crescent">
+        </ion-refresher-content>
+    </ion-refresher>
+
+    <!-- LOGGED IN CONTENT CONTAINER -->
+    <div class="schedule-container" *ngIf="ipsu.auth.status">
+
+        <!-- 1. LOADING SKELETON CARDS -->
+        <div class="skeleton-list" *ngIf="isLoading && allClasses.length === 0">
+            <div class="skeleton-card" *ngFor="let s of [1, 2, 3]">
+                <div class="sk-header">
+                    <ion-skeleton-text [animated]="true" style="width: 100px; height: 16px;"></ion-skeleton-text>
+                    <ion-skeleton-text [animated]="true" style="width: 120px; height: 16px;"></ion-skeleton-text>
+                </div>
+                <div class="sk-body">
+                    <ion-skeleton-text [animated]="true" style="width: 80%; height: 20px; margin-bottom: 8px;"></ion-skeleton-text>
+                    <ion-skeleton-text [animated]="true" style="width: 90%; height: 15px; margin-bottom: 6px;"></ion-skeleton-text>
+                    <ion-skeleton-text [animated]="true" style="width: 70%; height: 15px;"></ion-skeleton-text>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. CLASS CARDS FOR THE SELECTED DAY -->
+        <div class="class-cards-list" *ngIf="currentDayClasses.length > 0">
+            <div class="class-card-item" *ngFor="let c of currentDayClasses">
+                
+                <!-- Card Navy Header Banner -->
+                <div class="card-navy-header">
+                    <span class="card-time">
+                        {{ formatTime(c.startTimeFormatted, c.stopTimeFormatted) }}
+                    </span>
+                    <span class="card-sec-room">
+                        {{ ipsu.T('schedule.section_room', { section: c.section || '01', room: c.roomName || '-' }) }}
+                    </span>
+                </div>
+
+                <!-- Card White Body -->
+                <div class="card-white-body">
+                    <!-- Subject Code & Name (Bold) -->
+                    <h3 class="subject-title">
+                        {{ c.subjectCode }} {{ ipsu.language === 'en' ? (c.subjectNameEng || c.subjectNameThai) : (c.subjectNameThai || c.subjectNameEng) }}
+                    </h3>
+
+                    <!-- Optional Midterm Exam Row -->
+                    <div class="schedule-meta-row" *ngIf="c.midtermExam">
+                        <span class="meta-label">{{ ipsu.T('schedule.midterm') }} :</span>
+                        <span class="meta-val">{{ c.midtermExam }}</span>
+                    </div>
+
+                    <!-- Optional Final Exam Row -->
+                    <div class="schedule-meta-row" *ngIf="c.finalExam">
+                        <span class="meta-label">{{ ipsu.T('schedule.final') }} :</span>
+                        <span class="meta-val">{{ c.finalExam }}</span>
+                    </div>
+
+                    <!-- Building and Lecturer details -->
+                    <div class="schedule-meta-row" *ngIf="c.buildingName">
+                        <span class="meta-label">{{ ipsu.T('schedule.building') }} :</span>
+                        <span class="meta-val">{{ c.buildingName }} ({{ ipsu.T('schedule.credits', { count: c.credit }) }})</span>
+                    </div>
+
+                    <div class="schedule-meta-row" *ngIf="c.lecturerNameThai">
+                        <span class="meta-label">{{ ipsu.T('schedule.instructor') }} :</span>
+                        <span class="meta-val">{{ ipsu.language === 'en' ? (c.lecturerNameEng || c.lecturerNameThai) : c.lecturerNameThai }}</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 3. EMPTY STATE FOR THE DAY -->
+        <div class="empty-day-card" *ngIf="!isLoading && currentDayClasses.length === 0">
+            <div class="empty-icon-box">
+                <ion-icon name="calendar-clear-outline"></ion-icon>
+            </div>
+            <h3 class="empty-title">{{ ipsu.T('schedule.no_class_title', { day: getDayName(selectedDay) }) }}</h3>
+            <p class="empty-desc">
+                {{ ipsu.T('schedule.no_class_desc') }}
+            </p>
+        </div>
+
+    </div>
+
+    <!-- NOT LOGGED IN GUEST STATE -->
+    <div class="guest-wrap" *ngIf="!ipsu.auth.status">
+        <div class="guest-card">
+            <div class="guest-icon-box">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+            </div>
+            <h3>{{ ipsu.T('schedule.login_title') }}</h3>
+            <p>{{ ipsu.T('schedule.login_desc') }}</p>
+            <button type="button" class="btn-guest-login" (click)="promptLogin()">
+                <ion-icon name="log-in-outline"></ion-icon>
+                <span>{{ ipsu.T('menu.login') }}</span>
+            </button>
+        </div>
+    </div>
+
+</ion-content>
+
+<!-- 4. BOTTOM 7-DAY TABS (FIXED AT BOTTOM, MATCHING SCREENSHOT) -->
+<ion-footer class="ion-no-border schedule-footer" *ngIf="ipsu.auth.status">
+    <div class="days-bottom-bar">
+        <button type="button" 
+                *ngFor="let d of weekDays" 
+                class="btn-bottom-tab" 
+                [class.active]="selectedDay === d.id"
+                (click)="selectDay(d.id)">
+            <div class="tab-icon-box">
+                <ion-icon name="calendar"></ion-icon>
+            </div>
+            <span class="tab-label">{{ ipsu.language === 'en' ? d.en : d.name }}</span>
+            <div class="active-indicator" *ngIf="selectedDay === d.id"></div>
+        </button>
+    </div>
+</ion-footer>
+
+<!-- 5. MODERN TERM PICKER POPUP (CUSTOM DIALOG) -->
+<ion-modal [isOpen]="isTermModalOpen" (didDismiss)="closeTermModal()"
+    class="lightbox-custom-modal term-picker-modal" [class.dark-theme]="ipsu.isDarkTheme">
+    <ng-template>
+        <div class="term-modal-dialog">
+            
+            <!-- Modal Header -->
+            <div class="term-modal-header">
+                <div class="header-icon-badge">
+                    <ion-icon name="calendar-sharp"></ion-icon>
+                </div>
+                <div class="header-text-group">
+                    <h3 class="modal-title">{{ ipsu.T('schedule.choose_term') }}</h3>
+                    <p class="modal-subtitle">{{ ipsu.T('schedule.term_subtitle') }}</p>
+                </div>
+                <button type="button" class="btn-modal-close" (click)="closeTermModal()" aria-label="ปิด">
+                    <ion-icon name="close"></ion-icon>
+                </button>
+            </div>
+
+            <!-- Modal Body (Term Option Cards) -->
+            <div class="term-modal-body">
+                <div class="term-option-card"
+                     *ngFor="let item of availableTerms; let i = index"
+                     [class.selected]="isSelectedTerm(item)"
+                     (click)="selectTerm(item)">
+                    
+                    <!-- Icon Box -->
+                    <div class="card-icon-box" [class.selected]="isSelectedTerm(item)">
+                        <ion-icon name="school" *ngIf="item.term !== '3'"></ion-icon>
+                        <ion-icon name="sunny" *ngIf="item.term === '3'"></ion-icon>
+                    </div>
+
+                    <!-- Title and Info -->
+                    <div class="card-info-box">
+                        <div class="card-title-row">
+                            <span class="card-term-title">{{ ipsu.Localized(item, 'title') || ipsu.T('schedule.semester', { term: item.term, year: item.year }) }}</span>
+                            <span class="badge-latest" *ngIf="i === 0">{{ ipsu.T('schedule.latest') }}</span>
+                        </div>
+                        <div class="card-meta-row">
+                            <ion-icon name="book-outline"></ion-icon>
+                            <span>{{ ipsu.T('schedule.registered_classes', { count: item.count || 0 }) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Selection Indicator -->
+                    <div class="card-check-box">
+                        <div class="check-dot" *ngIf="isSelectedTerm(item)">
+                            <ion-icon name="checkmark-sharp"></ion-icon>
+                        </div>
+                        <div class="uncheck-dot" *ngIf="!isSelectedTerm(item)"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="term-modal-footer">
+                <button type="button" class="btn-cancel-modal" (click)="closeTermModal()">
+                    {{ ipsu.T('common.cancel') }}
+                </button>
+            </div>
+
+        </div>
+    </ng-template>
+</ion-modal>

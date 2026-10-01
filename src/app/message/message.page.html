@@ -1,0 +1,359 @@
+<ion-header class="ion-no-border message-header">
+    <div class="header-gradient-container" [class.selection-active]="isSelectionMode">
+
+        <!-- 1. Normal Mode Header Bar -->
+        <div class="header-top-bar" *ngIf="!isSelectionMode">
+            <div class="header-brand">
+                <h1 class="header-title">{{ ipsu.T('message.title') }}</h1>
+            </div>
+
+            <!-- Top Action Buttons -->
+            <div class="header-actions">
+                <button type="button"
+                        class="profile-header-action"
+                        [class.active]="isSearchVisible || searchQuery.length > 0"
+                        (click)="toggleSearch()" 
+                        [attr.aria-label]="ipsu.T('message.search')"
+                        [title]="ipsu.T('message.search')">
+                    <ion-icon [name]="isSearchVisible ? 'close-outline' : 'search-outline'"></ion-icon>
+                </button>
+
+                <button type="button"
+                        class="profile-header-action"
+                        *ngIf="message_type === 'message'"
+                        (click)="toggleSelectionMode()" 
+                        [attr.aria-label]="ipsu.T('message.select')"
+                        [title]="ipsu.T('message.select')">
+                    <ion-icon name="checkbox-outline"></ion-icon>
+                </button>
+
+                <button type="button"
+                        class="profile-header-action header-refresh-btn"
+                        (click)="LoadData(true)" 
+                        [attr.aria-label]="ipsu.T('common.refresh')"
+                        [title]="ipsu.T('common.refresh')">
+                    <ion-icon name="sync-outline" [class.spinning]="isLoading"></ion-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. Gmail-Style Selection Mode Header Bar -->
+        <div class="header-selection-bar" *ngIf="isSelectionMode">
+            <div class="selection-count-text">
+                <span class="count-label">{{ ipsu.T('message.selected_count', { count: selectedIds.size }) }}</span>
+            </div>
+
+            <button type="button"
+                    class="btn-exit-selection"
+                    (click)="exitSelectionMode()"
+                    [attr.aria-label]="ipsu.T('message.cancel_selection')">
+                <ion-icon name="close-outline"></ion-icon>
+                <span>{{ ipsu.T('common.cancel') }}</span>
+            </button>
+        </div>
+
+        <!-- Full-width icon tabs -->
+        <div class="pill-tabs-track" [attr.data-active]="message_type">
+            <button type="button" 
+                    class="pill-tab tab-task" 
+                    [class.active]="message_type === 'task'" 
+                    (click)="selectSegment('task')">
+                <div class="pill-icon-box">
+                    <ion-icon name="clipboard-outline"></ion-icon>
+                </div>
+                <span class="pill-text">{{ ipsu.T('message.task') }}</span>
+                <span class="pill-badge" *ngIf="unreadCounts.task > 0">{{ unreadCounts.task > 99 ? '99+' : unreadCounts.task }}</span>
+            </button>
+
+            <button type="button" 
+                    class="pill-tab tab-alert" 
+                    [class.active]="message_type === 'alert'" 
+                    (click)="selectSegment('alert')">
+                <div class="pill-icon-box">
+                    <ion-icon name="notifications-outline"></ion-icon>
+                </div>
+                <span class="pill-text">{{ ipsu.T('message.alert') }}</span>
+                <span class="pill-badge" *ngIf="unreadCounts.alert > 0">{{ unreadCounts.alert > 99 ? '99+' : unreadCounts.alert }}</span>
+            </button>
+
+            <button type="button" 
+                    class="pill-tab tab-message" 
+                    [class.active]="message_type === 'message'" 
+                    (click)="selectSegment('message')">
+                <div class="pill-icon-box">
+                    <ion-icon name="chatbubbles-outline"></ion-icon>
+                </div>
+                <span class="pill-text">{{ ipsu.T('message.message') }}</span>
+                <span class="pill-badge" *ngIf="unreadCounts.message > 0">{{ unreadCounts.message > 99 ? '99+' : unreadCounts.message }}</span>
+            </button>
+        </div>
+
+        <!-- Search stays below the message-type tabs -->
+        <div class="search-bar-wrap" *ngIf="isSearchVisible && !isSelectionMode">
+            <div class="search-input-box">
+                <ion-icon name="search-outline" class="search-box-icon"></ion-icon>
+                <input type="text"
+                       class="search-native-input"
+                       [(ngModel)]="searchQuery"
+                       (input)="filterList()"
+                       [placeholder]="searchPlaceholder"
+                       autocomplete="off" />
+                <button type="button"
+                        class="search-clear-btn"
+                        *ngIf="searchQuery.length > 0"
+                        (click)="clearSearch()"
+                        [attr.aria-label]="ipsu.T('message.clear_search')">
+                    <ion-icon name="close-circle"></ion-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="message-content">
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+        <ion-refresher-content pullingIcon="chevron-down-circle-outline" refreshingSpinner="crescent">
+        </ion-refresher-content>
+    </ion-refresher>
+
+    <!-- Logged In Content -->
+    <div class="message-body" *ngIf="ipsu.auth.status">
+
+        <div class="offline-hint" *ngIf="isOffline">
+            <ion-icon name="cloud-offline-outline"></ion-icon>
+            <span>{{ ipsu.T('message.offline') }}</span>
+        </div>
+
+        <!-- Skeleton Loading -->
+        <div class="skeleton-list" *ngIf="isLoading && (!filteredMessages || filteredMessages.length === 0)">
+            <div class="skeleton-item" *ngFor="let i of [1, 2, 3, 4, 5]">
+                <div class="sk-text-col">
+                    <div class="sk-row">
+                        <ion-skeleton-text [animated]="true" style="width: 35%; height: 12px;"></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true" style="width: 22%; height: 10px;"></ion-skeleton-text>
+                    </div>
+                    <ion-skeleton-text [animated]="true" style="width: 88%; height: 14px; margin: 5px 0;"></ion-skeleton-text>
+                    <ion-skeleton-text [animated]="true" style="width: 65%; height: 11px;"></ion-skeleton-text>
+                </div>
+            </div>
+        </div>
+
+        <!-- High-Density Aesthetic Message List (Gmail Style) -->
+        <div class="message-list" *ngIf="filteredMessages && filteredMessages.length > 0">
+            <div *ngFor="let msg of filteredMessages" 
+                 class="msg-item" 
+                 [class.msg-unread]="message_type === 'message' && !msg.isRead"
+                 [class.msg-selected]="isItemSelected(msg.id)"
+                 [class.selection-mode]="isSelectionMode"
+                 (pointerdown)="startMessageLongPress(msg, $event)"
+                 (pointermove)="moveMessageLongPress($event)"
+                 (pointerup)="endMessageLongPress()"
+                 (pointercancel)="endMessageLongPress()"
+                 (pointerleave)="endMessageLongPress()"
+                 (contextmenu)="onMessageContextMenu(msg, $event)"
+                 (click)="onCardClick(msg)">
+
+                <!-- Selection checkbox appears only after a long press -->
+                <div class="msg-avatar-col" *ngIf="isSelectionMode" (click)="onAvatarClick(msg, $event)">
+                    <div class="gmail-checkbox-bubble"
+                         [class.checked]="isItemSelected(msg.id)">
+                        <ion-icon name="checkmark-sharp" *ngIf="isItemSelected(msg.id)"></ion-icon>
+                        <div class="uncheck-ring" *ngIf="!isItemSelected(msg.id)"></div>
+                    </div>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="msg-content">
+                    <div class="msg-title-line">
+                        <span class="unread-dot"
+                              *ngIf="message_type === 'message' && !msg.isRead"
+                              [attr.aria-label]="ipsu.T('message.unread')"></span>
+                        <h3 class="msg-title">{{ msg.title }}</h3>
+                        <ion-icon class="saved-icon"
+                                  *ngIf="message_type === 'message' && msg.isSaved"
+                                  name="bookmark"
+                                  [attr.aria-label]="ipsu.T('message.saved')"></ion-icon>
+                        <span class="msg-time">{{ formatMessageDate(msg.addWhen) }}</span>
+                    </div>
+
+                    <div class="msg-bottom-line">
+                        <p class="msg-preview" *ngIf="msg.detail || msg.sender">
+                            {{ msg.detail || msg.sender }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Empty State -->
+        <div class="empty-state search-empty" *ngIf="!isLoading && searchQuery && filteredMessages.length === 0">
+            <div class="empty-icon-wrap empty-search">
+                <ion-icon name="search-outline"></ion-icon>
+            </div>
+            <h3 class="empty-title">{{ ipsu.T('message.no_search_result') }}</h3>
+            <p class="empty-desc">
+                {{ ipsu.T('message.no_search_match', { query: searchQuery }) }}
+            </p>
+            <button type="button" class="btn-reset-search" (click)="clearSearch()">
+                <ion-icon name="refresh-outline"></ion-icon>
+                <span>{{ ipsu.T('message.clear_search') }}</span>
+            </button>
+        </div>
+
+        <!-- Normal Empty State -->
+        <div class="empty-state" *ngIf="!isLoading && !searchQuery && (!filteredMessages || filteredMessages.length === 0)">
+            <div class="empty-icon-wrap" [ngClass]="'empty-' + message_type">
+                <ion-icon *ngIf="message_type === 'task'" name="checkmark-done-circle-outline"></ion-icon>
+                <ion-icon *ngIf="message_type === 'alert'" name="notifications-off-outline"></ion-icon>
+                <ion-icon *ngIf="message_type === 'message'" name="chatbubbles-outline"></ion-icon>
+            </div>
+            <h3 class="empty-title">
+                {{ message_type === 'task' ? ipsu.T('message.no_task') : (message_type === 'alert' ? ipsu.T('message.no_alert') : ipsu.T('message.no_message')) }}
+            </h3>
+            <p class="empty-desc">
+                {{ message_type === 'task' ? ipsu.T('message.no_task_desc') : (message_type === 'alert' ? ipsu.T('message.no_alert_desc') : ipsu.T('message.no_message_desc')) }}
+            </p>
+        </div>
+
+    </div>
+
+    <ion-infinite-scroll
+        *ngIf="ipsu.auth.status"
+        [disabled]="!hasMore || isLoading || isLoadingMore"
+        threshold="120px"
+        (ionInfinite)="loadMore($event)">
+        <ion-infinite-scroll-content
+            loadingSpinner="crescent"
+            [loadingText]="ipsu.T('message.loading_more')">
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
+    <!-- Not Logged In Guest State -->
+    <div class="guest-wrap" *ngIf="!ipsu.auth.status">
+        <div class="guest-card">
+            <div class="guest-icon-box">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+            </div>
+            <h3>{{ ipsu.T('message.login_title') }}</h3>
+            <p>{{ ipsu.T('message.login_desc') }}</p>
+            <button type="button" class="btn-guest-login" (click)="promptLogin()">
+                <ion-icon name="log-in-outline"></ion-icon>
+                <span>{{ ipsu.T('menu.login') }}</span>
+            </button>
+        </div>
+    </div>
+</ion-content>
+
+<!-- Floating Bottom Selection Bar (Mobile Friendly Thumb Control) -->
+<div class="floating-selection-bar" *ngIf="isSelectionMode">
+    <div class="bar-buttons">
+        <button type="button" class="bar-btn btn-bar-all" (click)="toggleSelectAll()">
+            <ion-icon [name]="isAllSelected() ? 'checkbox' : 'checkbox-outline'"></ion-icon>
+            <span>{{ isAllSelected() ? ipsu.T('common.cancel') : ipsu.T('message.all') }}</span>
+        </button>
+
+        <button type="button" 
+                class="bar-btn btn-bar-read" 
+                [disabled]="selectedIds.size === 0"
+                (click)="markSelectedAsRead()">
+            <ion-icon name="mail-open-outline"></ion-icon>
+            <span>{{ ipsu.T('message.mark_read') }}</span>
+        </button>
+
+        <button type="button"
+                class="bar-btn btn-bar-save"
+                [disabled]="selectedIds.size === 0"
+                (click)="toggleSelectedSaved()">
+            <ion-icon [name]="selectedAreSaved() ? 'bookmark-outline' : 'bookmark'"></ion-icon>
+            <span>{{ selectedAreSaved() ? ipsu.T('message.unsave') : ipsu.T('message.save') }}</span>
+        </button>
+
+        <button type="button" 
+                class="bar-btn btn-bar-delete" 
+                [disabled]="selectedIds.size === 0"
+                (click)="deleteSelected()">
+            <ion-icon name="trash-outline"></ion-icon>
+            <span>{{ ipsu.T('message.delete_count', { count: selectedIds.size }) }}</span>
+        </button>
+    </div>
+</div>
+
+<!-- Message Detail Modal (Uses root ion-modal with lightbox-custom-modal backdrop identical to ShowConfirm) -->
+<ion-modal [isOpen]="isDetailModalOpen" (didDismiss)="closeMessageDetail()" class="lightbox-custom-modal">
+    <ng-template>
+        <div class="modal-card-dialog" *ngIf="selectedMessage">
+            <!-- Modal Header with Category Tag and Close Button -->
+            <div class="dialog-header">
+                <div class="dialog-type-pill" [ngClass]="'tag-' + message_type">
+                    <ion-icon *ngIf="message_type === 'task'" name="clipboard-outline"></ion-icon>
+                    <ion-icon *ngIf="message_type === 'alert'" name="notifications-outline"></ion-icon>
+                    <ion-icon *ngIf="message_type === 'message'" name="chatbubbles-outline"></ion-icon>
+                    <span>{{ message_type === 'task' ? ipsu.T('message.task') : (message_type === 'alert' ? ipsu.T('message.alert') : ipsu.T('message.message')) }}</span>
+                </div>
+
+                <button type="button" class="btn-dialog-close" (click)="closeMessageDetail()" [attr.aria-label]="ipsu.T('message.close')">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="dialog-body">
+                <h2 class="dialog-title">{{ selectedMessage.title }}</h2>
+
+                <!-- Meta Info Strip -->
+                <div class="dialog-meta-strip">
+                    <div class="meta-item sender-item" *ngIf="selectedMessage.sender">
+                        <ion-icon name="business-outline"></ion-icon>
+                        <span>{{ selectedMessage.sender }}</span>
+                    </div>
+                    <div class="meta-item date-item" *ngIf="selectedMessage.addWhen">
+                        <ion-icon name="time-outline"></ion-icon>
+                        <span>{{ formatMessageDate(selectedMessage.addWhen) }}</span>
+                    </div>
+                </div>
+
+                <!-- Separator -->
+                <div class="dialog-separator" *ngIf="message_type === 'message'"></div>
+
+                <!-- Message Full Content Box -->
+                <div class="dialog-content-box" *ngIf="message_type === 'message'">
+                    <p *ngIf="selectedMessage.detail">
+                        {{ selectedMessage.detail }}
+                    </p>
+                    <p *ngIf="!selectedMessage.detail">
+                        {{ ipsu.T('message.no_detail') }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Modal Action Footer -->
+            <div class="dialog-footer">
+                <button type="button"
+                        class="btn-dialog-secondary"
+                        *ngIf="message_type === 'message'"
+                        (click)="toggleSaved(selectedMessage)">
+                    <ion-icon [name]="selectedMessage.isSaved ? 'bookmark-outline' : 'bookmark'"></ion-icon>
+                    <span>{{ selectedMessage.isSaved ? ipsu.T('message.unsave') : ipsu.T('message.save') }}</span>
+                </button>
+                <button type="button"
+                        class="btn-dialog-danger"
+                        *ngIf="message_type === 'message'"
+                        (click)="deleteMessage(selectedMessage)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                    <span>{{ ipsu.T('message.delete') }}</span>
+                </button>
+                <button type="button"
+                        class="btn-dialog-link"
+                        *ngIf="message_type !== 'message' && getItemLink(selectedMessage)"
+                        (click)="openItemLink(selectedMessage)">
+                    <ion-icon name="open-outline"></ion-icon>
+                    <span>{{ ipsu.T('message.open_link') }}</span>
+                </button>
+                <button type="button" class="btn-dialog-primary" (click)="closeMessageDetail()">
+                    <ion-icon name="close-outline"></ion-icon>
+                    <span>{{ ipsu.T('message.close') }}</span>
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</ion-modal>

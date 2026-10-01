@@ -1,0 +1,66 @@
+<ion-header class="ion-no-border">
+    <ion-toolbar color="psu">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/tabs/home"></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ ipsu.T('setting.title') }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="setting-content">
+    <div class="setting-container">
+        <p class="empty-note" *ngIf="!ipsu.auth.status">{{ ipsu.T('setting.login_required') }}</p>
+
+        <div class="setting-card" *ngIf="ipsu.auth.status">
+            <div class="card-header-bar">
+                <div class="icon-bubble">
+                    <ion-icon name="shield-checkmark"></ion-icon>
+                </div>
+                <span class="header-title">{{ ipsu.T('setting.security') }}</span>
+            </div>
+
+            <div class="setting-row" role="button" tabindex="0" (click)="ToggleLock()">
+                <div class="row-text">
+                    <span class="row-title">{{ ipsu.T('setting.lock_enable') }}</span>
+                    <span class="row-hint">{{ ipsu.T('setting.lock_enable_hint') }}</span>
+                </div>
+                <ion-toggle [checked]="lock.config.enabled" aria-hidden="true"></ion-toggle>
+            </div>
+
+            <ng-container *ngIf="lock.config.enabled">
+                <div class="setting-row" *ngIf="lock.biometricSupported" role="button" tabindex="0" (click)="ToggleBiometric()">
+                    <div class="row-text">
+                        <span class="row-title">{{ ipsu.T('setting.biometric', { type: lock.BiometricLabel() }) }}</span>
+                        <span class="row-hint">{{ ipsu.T('setting.biometric_hint') }}</span>
+                    </div>
+                    <ion-toggle [checked]="lock.config.biometric" aria-hidden="true"></ion-toggle>
+                </div>
+
+                <div class="setting-row is-disabled" *ngIf="!lock.biometricSupported">
+                    <div class="row-text">
+                        <span class="row-title">{{ ipsu.T('setting.biometric_unavailable') }}</span>
+                        <span class="row-hint">{{ ipsu.T('setting.biometric_unavailable_hint') }}</span>
+                    </div>
+                    <ion-toggle [checked]="false" [disabled]="true" aria-hidden="true"></ion-toggle>
+                </div>
+
+                <div class="setting-row is-block">
+                    <span class="row-title">{{ ipsu.T('setting.timeout') }}</span>
+                    <div class="timeout-options">
+                        <button *ngFor="let s of timeoutOptions" type="button" class="chip"
+                            [class.active]="lock.config.timeout === s" (click)="ChooseTimeout(s)">
+                            {{ ipsu.T('setting.timeout_' + s) }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="setting-row" role="button" tabindex="0" (click)="ChangePin()">
+                    <div class="row-text">
+                        <span class="row-title">{{ ipsu.T('setting.change_pin') }}</span>
+                    </div>
+                    <ion-icon name="chevron-forward-outline" class="row-arrow"></ion-icon>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</ion-content>

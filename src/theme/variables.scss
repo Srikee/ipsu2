@@ -1,0 +1,358 @@
+// For information on how to create your own theme, please see:
+// http://ionicframework.com/docs/theming/
+
+:root {
+    /** semantic application colors **/
+    --app-background: #f8fafc;
+    --app-surface: #ffffff;
+    --app-surface-muted: #f1f5f9;
+    --app-text-primary: #0f172a;
+    --app-text-secondary: #64748b;
+    --app-border-color: rgba(15, 23, 42, 0.08);
+    --app-shadow-color: rgba(15, 23, 42, 0.12);
+
+    /** psu **/
+    --ion-color-psu: #003C71;
+    --ion-color-psu-rgb: 0, 60, 113;
+    --ion-color-psu-contrast: #ffffff;
+    --ion-color-psu-contrast-rgb: 255, 255, 255;
+    --ion-color-psu-shade: #003563;
+    --ion-color-psu-tint: #1a507f;
+
+    /** primary **/
+    --ion-color-primary: #3880ff;
+    --ion-color-primary-rgb: 56, 128, 255;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-primary-contrast-rgb: 255, 255, 255;
+    --ion-color-primary-shade: #3171e0;
+    --ion-color-primary-tint: #4c8dff;
+
+    /** secondary **/
+    --ion-color-secondary: #0cd1e8;
+    --ion-color-secondary-rgb: 12, 209, 232;
+    --ion-color-secondary-contrast: #ffffff;
+    --ion-color-secondary-contrast-rgb: 255, 255, 255;
+    --ion-color-secondary-shade: #0bb8cc;
+    --ion-color-secondary-tint: #24d6ea;
+
+    /** tertiary **/
+    --ion-color-tertiary: #7044ff;
+    --ion-color-tertiary-rgb: 112, 68, 255;
+    --ion-color-tertiary-contrast: #ffffff;
+    --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+    --ion-color-tertiary-shade: #633ce0;
+    --ion-color-tertiary-tint: #7e57ff;
+
+    /** success **/
+    --ion-color-success: #10dc60;
+    --ion-color-success-rgb: 16, 220, 96;
+    --ion-color-success-contrast: #ffffff;
+    --ion-color-success-contrast-rgb: 255, 255, 255;
+    --ion-color-success-shade: #0ec254;
+    --ion-color-success-tint: #28e070;
+
+    /** warning **/
+    --ion-color-warning: #ffce00;
+    --ion-color-warning-rgb: 255, 206, 0;
+    --ion-color-warning-contrast: #ffffff;
+    --ion-color-warning-contrast-rgb: 255, 255, 255;
+    --ion-color-warning-shade: #e0b500;
+    --ion-color-warning-tint: #ffd31a;
+
+    /** danger **/
+    --ion-color-danger: #f04141;
+    --ion-color-danger-rgb: 245, 61, 61;
+    --ion-color-danger-contrast: #ffffff;
+    --ion-color-danger-contrast-rgb: 255, 255, 255;
+    --ion-color-danger-shade: #d33939;
+    --ion-color-danger-tint: #f25454;
+
+    /** dark **/
+    --ion-color-dark: #222428;
+    --ion-color-dark-rgb: 34, 34, 34;
+    --ion-color-dark-contrast: #ffffff;
+    --ion-color-dark-contrast-rgb: 255, 255, 255;
+    --ion-color-dark-shade: #1e2023;
+    --ion-color-dark-tint: #383a3e;
+
+    /** medium **/
+    --ion-color-medium: #989aa2;
+    --ion-color-medium-rgb: 152, 154, 162;
+    --ion-color-medium-contrast: #ffffff;
+    --ion-color-medium-contrast-rgb: 255, 255, 255;
+    --ion-color-medium-shade: #86888f;
+    --ion-color-medium-tint: #a2a4ab;
+
+    /** light **/
+    --ion-color-light: #f4f5f8;
+    --ion-color-light-rgb: 244, 244, 244;
+    --ion-color-light-contrast: #000000;
+    --ion-color-light-contrast-rgb: 0, 0, 0;
+    --ion-color-light-shade: #d7d8da;
+    --ion-color-light-tint: #f5f6f9;
+}
+
+html.dark,
+body.dark {
+    --app-background: #0b1120;
+    --app-surface: #172033;
+    --app-surface-muted: #1e293b;
+    --app-text-primary: #f8fafc;
+    --app-text-secondary: #94a3b8;
+    --app-border-color: rgba(255, 255, 255, 0.09);
+    --app-shadow-color: rgba(0, 0, 0, 0.42);
+}
+
+.ion-color-psu {
+    --ion-color-base: var(--ion-color-psu);
+    --ion-color-base-rgb: var(--ion-color-psu-rgb);
+    --ion-color-contrast: var(--ion-color-psu-contrast);
+    --ion-color-contrast-rgb: var(--ion-color-psu-contrast-rgb);
+    --ion-color-shade: var(--ion-color-psu-shade);
+    --ion-color-tint: var(--ion-color-psu-tint);
+}
+
+.text-psu {
+    color: var(--ion-color-psu) !important;
+}
+
+.text-primary {
+    color: var(--ion-color-primary) !important;
+}
+
+.text-secondary {
+    color: var(--ion-color-secondary) !important;
+}
+
+.text-tertiary {
+    color: var(--ion-color-tertiary) !important;
+}
+
+.text-success {
+    color: var(--ion-color-success) !important;
+}
+
+.text-warning {
+    color: var(--ion-color-warning) !important;
+}
+
+.text-danger {
+    color: var(--ion-color-danger) !important;
+}
+
+.text-dark {
+    color: var(--ion-color-dark) !important;
+}
+
+.text-medium {
+    color: var(--ion-color-medium) !important;
+}
+
+.text-light {
+    color: var(--ion-color-light) !important;
+}
+
+.bg-psu {
+    background-color: var(--ion-color-psu) !important;
+}
+
+.bg-primary {
+    background-color: var(--ion-color-primary) !important;
+}
+
+.bg-secondary {
+    background-color: var(--ion-color-secondary) !important;
+}
+
+.bg-tertiary {
+    background-color: var(--ion-color-tertiary) !important;
+}
+
+.bg-success {
+    background-color: var(--ion-color-success) !important;
+}
+
+.bg-warning {
+    background-color: var(--ion-color-warning) !important;
+}
+
+.bg-danger {
+    background-color: var(--ion-color-danger) !important;
+}
+
+.bg-dark {
+    background-color: var(--ion-color-dark) !important;
+}
+
+.bg-medium {
+    background-color: var(--ion-color-medium) !important;
+}
+
+.bg-light {
+    background-color: var(--ion-color-light) !important;
+}
+
+.app-psu {
+    [aria-checked=true].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md {
+        border-color: var(--ion-color-psu);
+    }
+
+    .alert-radio-inner.sc-ion-alert-md {
+        background-color: var(--ion-color-psu);
+    }
+
+    .alert-button.sc-ion-alert-md {
+        color: var(--ion-color-psu);
+    }
+}
+
+.app-primary {
+    [aria-checked=true].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md {
+        border-color: var(--ion-color-primary);
+    }
+
+    .alert-radio-inner.sc-ion-alert-md {
+        background-color: var(--ion-color-primary);
+    }
+
+    .alert-button.sc-ion-alert-md {
+        color: var(--ion-color-primary);
+    }
+}
+
+.app-secondary {
+    [aria-checked=true].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md {
+        border-color: var(--ion-color-secondary);
+    }
+
+    .alert-radio-inner.sc-ion-alert-md {
+        background-color: var(--ion-color-secondary);
+    }
+
+    .alert-button.sc-ion-alert-md {
+        color: var(--ion-color-secondary);
+    }
+}
+
+.app-tertiary {
+    [aria-checked=true].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md {
+        border-color: var(--ion-color-tertiary);
+    }
+
+    .alert-radio-inner.sc-ion-alert-md {
+        background-color: var(--ion-color-tertiary);
+    }
+
+    .alert-button.sc-ion-alert-md {
+        color: var(--ion-color-tertiary);
+    }
+}
+
+.app-success {
+    [aria-checked=true].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md {
+        border-color: var(--ion-color-success);
+    }
+
+    .alert-radio-inner.sc-ion-alert-md {
+        background-color: var(--ion-color-success);
+    }
+
+    .alert-button.sc-ion-alert-md {
+        color: var(--ion-color-success);
+    }
+}
+
+.app-warning {
+    [aria-checked=true].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md {
+        border-color: var(--ion-color-warning);
+    }
+
+    .alert-radio-inner.sc-ion-alert-md {
+        background-color: var(--ion-color-warning);
+    }
+
+    .alert-button.sc-ion-alert-md {
+        color: var(--ion-color-warning);
+    }
+}
+
+.app-danger {
+    [aria-checked=true].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md {
+        border-color: var(--ion-color-danger);
+    }
+
+    .alert-radio-inner.sc-ion-alert-md {
+        background-color: var(--ion-color-danger);
+    }
+
+    .alert-button.sc-ion-alert-md {
+        color: var(--ion-color-danger);
+    }
+}
+
+.app-dark,
+.app-medium,
+.app-light {
+    [aria-checked=true].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md {
+        border-color: var(--ion-color-dark);
+    }
+
+    .alert-radio-inner.sc-ion-alert-md {
+        background-color: var(--ion-color-dark);
+    }
+
+    .alert-button.sc-ion-alert-md {
+        color: var(--ion-color-dark);
+    }
+}
+
+// .app-medium {
+//     [aria-checked=true].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md { border-color: var(--ion-color-medium); }
+//     .alert-radio-inner.sc-ion-alert-md { background-color: var(--ion-color-medium); }
+//     .alert-button.sc-ion-alert-md { color: var(--ion-color-medium); }
+// }
+// .app-light {
+//     [aria-checked=true].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md { border-color: var(--ion-color-light); }
+//     .alert-radio-inner.sc-ion-alert-md { background-color: var(--ion-color-light); }
+//     .alert-button.sc-ion-alert-md { color: var(--ion-color-light); }
+// }
+
+ion-segment-button.psu {
+    color: #9dd0ff;
+}
+
+ion-segment-button.primary {
+    color: #90caff;
+}
+
+ion-segment-button.secondary {
+    color: #a8f6ff;
+}
+
+ion-segment-button.tertiary {
+    color: #c6b4ff;
+}
+
+ion-segment-button.success {
+    color: #d2ffe4;
+}
+
+ion-segment-button.warning {
+    color: #fff9e1;
+}
+
+ion-segment-button.danger {
+    color: #ffb3b3;
+}
+
+ion-segment-button.dark {
+    color: #9e9e9e;
+}
+
+ion-segment-button.medium {
+    color: #c7c7c7;
+}
+
+ion-segment-button.light {
+    color: #797979;
+}

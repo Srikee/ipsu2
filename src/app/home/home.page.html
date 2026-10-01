@@ -1,0 +1,368 @@
+<ion-header class="ion-no-border home-header">
+    <ion-toolbar class="home-toolbar">
+        <ion-buttons slot="start">
+            <ion-menu-button class="menu-icon-btn"></ion-menu-button>
+        </ion-buttons>
+
+        <ion-title class="brand-title">
+            <img class="image-logo" src="assets/imgs/ipsu-1.png" alt="iPSU Logo">
+        </ion-title>
+
+        <ion-buttons slot="end" class="header-actions">
+            <!-- Messages / Notification Bell -->
+            <button type="button"
+                    class="home-notification-button"
+                    (click)="openMessages()"
+                    [attr.aria-label]="ipsu.unreadMessageCount > 0
+                        ? ipsu.T('home.notifications_count', { count: ipsu.unreadMessageCount })
+                        : ipsu.T('home.notifications')">
+                <ion-icon class="notification-icon" name="notifications"></ion-icon>
+                <span class="notification-badge" *ngIf="ipsu.unreadMessageCount > 0">
+                    {{ ipsu.unreadMessageCount > 99 ? '99+' : ipsu.unreadMessageCount }}
+                </span>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="home-content">
+
+    <!-- Native Pull-To-Refresh -->
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+        <ion-refresher-content pullingIcon="chevron-down-circle-outline" refreshingSpinner="crescent">
+        </ion-refresher-content>
+    </ion-refresher>
+
+    <div class="home-container">
+
+        <!-- 1. PERSONALIZED HERO GREETING CARD -->
+        <section class="hero-greeting-card">
+            <div class="greeting-bg-glow"></div>
+            <div class="greeting-content">
+                <div class="greeting-info">
+                    <div class="greeting-date">
+                        <ion-icon name="calendar-clear-outline"></ion-icon>
+                        <span>{{ currentDateDisplay }}</span>
+                    </div>
+                    <h1 class="greeting-title">
+                        <span>{{ greetingDisplay }}</span>
+                        <ion-icon [name]="greetingIcon" class="greeting-time-icon"></ion-icon>
+                    </h1>
+                    <div class="greeting-user" *ngIf="ipsu.auth.status">
+                        <span class="user-name">{{ (ipsu.language === 'en' ? ipsu.auth.fullname_en : ipsu.auth.fullname_th) || ipsu.auth.username }}</span>
+                        <span class="user-badge" [class.badge-student]="ipsu.auth.group === 'student'"
+                            [class.badge-staff]="ipsu.auth.group === 'staff'">
+                            {{ ipsu.auth.group === 'student' ? ipsu.T('information.student') : (ipsu.auth.group === 'staff' ? ipsu.T('information.staff') : ipsu.T('information.user')) }}
+                        </span>
+                    </div>
+                    <div class="greeting-guest" *ngIf="!ipsu.auth.status">
+                        <p class="guest-desc">{{ ipsu.T('home.guest_welcome') }}</p>
+                    </div>
+                </div>
+
+                <!-- Right Action: Profile Photo or Login SSO Button -->
+                <div class="greeting-action">
+                    <button type="button"
+                            *ngIf="ipsu.auth.status"
+                            class="btn-profile-photo"
+                            (click)="openProfilePhoto()"
+                            [attr.aria-label]="ipsu.T('home.view_photo')">
+                        <img *ngIf="ipsu.auth.image"
+                             [src]="'data:image/jpeg;base64,' + ipsu.auth.image"
+                             alt="รูปโปรไฟล์"
+                             class="hero-profile-img">
+                        <img *ngIf="!ipsu.auth.image"
+                             src="assets/imgs/no-user.png"
+                             alt="รูปโปรไฟล์เริ่มต้น"
+                             class="hero-profile-img fallback-img">
+                        <span class="profile-zoom-hint">
+                            <ion-icon name="search-outline"></ion-icon>
+                        </span>
+                    </button>
+
+                    <button type="button" *ngIf="!ipsu.auth.status" class="btn-quick-login" (click)="openLogin()">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        <span>{{ ipsu.T('login.sign_in') }}</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. HERO BANNER CAROUSEL -->
+        <section class="banner-section">
+            <!-- Skeleton while loading -->
+            <div class="banner-skeleton" *ngIf="isLoading && (!banner || banner.length === 0)">
+                <ion-skeleton-text [animated]="true" class="skeleton-banner-box"></ion-skeleton-text>
+            </div>
+
+            <!-- Swiper Carousel -->
+            <div class="banner-carousel-wrapper" *ngIf="banner && banner.length > 0">
+                <swiper-container [autoplay]="{ delay: 4000, disableOnInteraction: false }" [loop]="banner.length > 1"
+                    [pagination]="{ clickable: true }" class="banner-swiper">
+                    <swiper-slide *ngFor="let item of banner" class="banner-slide">
+                        <div class="banner-card" (click)="onBannerClick(item)">
+                            <img [src]="item.image" alt="Banner" class="banner-img" />
+                            <div class="banner-overlay" *ngIf="item.title">
+                                <span class="banner-badge">{{ ipsu.T('home.promotion') }}</span>
+                                <h3 class="banner-title">{{ item.title }}</h3>
+                            </div>
+                        </div>
+                    </swiper-slide>
+                </swiper-container>
+            </div>
+        </section>
+
+        <!-- 3. QUICK SERVICES SECTION -->
+        <section class="services-section" *ngIf="ipsu.auth.status">
+            <div class="section-header">
+                <div class="header-left">
+                    <h2 class="section-title">{{ ipsu.T('home.quick_services') }}</h2>
+                </div>
+                <button type="button" class="btn-edit-services" (click)="openQuickMenu()" *ngIf="quickServices.length > 0">
+                    <ion-icon name="create-outline"></ion-icon>
+                    <span>{{ ipsu.T('home.edit_quick_services') }}</span>
+                </button>
+            </div>
+
+            <div class="services-grid quick-services-skeleton" *ngIf="isQuickServicesLoading && quickServices.length === 0" aria-hidden="true">
+                <div class="service-card" *ngFor="let item of [1, 2, 3, 4]">
+                    <ion-skeleton-text [animated]="true" class="quick-skeleton-icon"></ion-skeleton-text>
+                    <ion-skeleton-text [animated]="true" class="quick-skeleton-title"></ion-skeleton-text>
+                </div>
+            </div>
+
+            <div class="services-grid" *ngIf="quickServices.length > 0">
+                <button type="button" *ngFor="let s of quickServices" class="service-card" (click)="openQuickService(s)">
+                    <div class="service-icon-box" [style.background]="s.gradient">
+                        <ion-icon [name]="s.iconName"></ion-icon>
+                    </div>
+                    <span class="service-title">{{ ipsu.Localized(s, 'title') }}</span>
+                </button>
+            </div>
+
+            <div class="quick-services-empty" *ngIf="!isQuickServicesLoading && quickServices.length === 0">
+                <div class="empty-quick-icon">
+                    <ion-icon name="flash-outline"></ion-icon>
+                </div>
+                <div class="empty-quick-copy">
+                    <h3>{{ ipsu.T('home.no_quick_services') }}</h3>
+                    <p>{{ ipsu.T('home.no_quick_services_desc') }}</p>
+                </div>
+                <button type="button" class="btn-select-services" (click)="openQuickMenu()">
+                    <ion-icon name="add-outline"></ion-icon>
+                    <span>{{ ipsu.T('home.select_quick_services') }}</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 4. LATEST NEWS & ANNOUNCEMENTS FEED -->
+        <section class="news-section">
+            <div class="section-header">
+                <div class="header-left">
+                    <h2 class="section-title">{{ ipsu.T('home.news') }}</h2>
+                </div>
+                <button type="button" class="btn-refresh-news" (click)="LoadData(true)">
+                    <ion-icon name="sync-outline"></ion-icon>
+                    <span>{{ ipsu.T('home.update') }}</span>
+                </button>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="category-pills">
+                <button type="button" class="pill-btn" [class.active]="activeCategory === 'all'"
+                    (click)="setCategory('all')">
+                    {{ ipsu.T('home.all') }}
+                </button>
+                <button type="button" class="pill-btn" [class.active]="activeCategory === 'general'"
+                    (click)="setCategory('general')">
+                    {{ ipsu.T('home.general') }}
+                </button>
+                <button type="button" class="pill-btn" [class.active]="activeCategory === 'event'"
+                    (click)="setCategory('event')">
+                    {{ ipsu.T('home.activities') }}
+                </button>
+                <button type="button" class="pill-btn" [class.active]="activeCategory === 'scholarship'"
+                    (click)="setCategory('scholarship')">
+                    {{ ipsu.T('home.scholarships') }}
+                </button>
+            </div>
+
+            <!-- Skeleton loading for news -->
+            <div class="news-skeleton-list" *ngIf="isLoading && (!news || news.length === 0)">
+                <div class="skeleton-news-item" *ngFor="let i of [1, 2, 3]">
+                    <div class="skeleton-line-title">
+                        <ion-skeleton-text [animated]="true"
+                            style="width: 75%; height: 18px; border-radius: 6px;"></ion-skeleton-text>
+                    </div>
+                    <div class="skeleton-line-meta">
+                        <ion-skeleton-text [animated]="true"
+                            style="width: 45%; height: 12px; border-radius: 4px;"></ion-skeleton-text>
+                    </div>
+                </div>
+            </div>
+
+            <!-- News List Cards -->
+            <div class="news-list" *ngIf="filteredNews && filteredNews.length > 0">
+                <div *ngFor="let item of filteredNews" class="news-card" (click)="openNewsDetail(item)">
+                    <div class="news-card-inner">
+                        <div class="news-badge-row">
+                            <span class="news-category-badge" [ngClass]="getCategoryBadge(item).class">
+                                {{ getCategoryBadge(item).label }}
+                            </span>
+                            <span class="news-date">
+                                <ion-icon name="calendar-outline"></ion-icon>
+                                {{ item.date }}
+                            </span>
+                        </div>
+
+                        <h3 class="news-headline">{{ item.title }}</h3>
+
+                        <div class="news-footer">
+                            <span class="news-author" *ngIf="item.user">
+                                <ion-icon name="person-outline"></ion-icon>
+                                {{ item.user }}
+                            </span>
+                            <span class="news-read-more">
+                                <span>{{ ipsu.T('home.read_more') }}</span>
+                                <ion-icon name="arrow-forward-outline"></ion-icon>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty News Fallback -->
+            <div class="news-empty-state" *ngIf="!isLoading && (!filteredNews || filteredNews.length === 0)">
+                <div class="empty-icon-wrap">
+                    <ion-icon name="newspaper-outline"></ion-icon>
+                </div>
+                <h4>{{ ipsu.T('home.no_news') }}</h4>
+                <p>{{ ipsu.T('home.no_news_desc') }}</p>
+            </div>
+        </section>
+
+
+
+    </div>
+
+    <!-- 6. NEWS READER MODAL -->
+    <div class="news-reader-backdrop" [class.active]="isNewsModalOpen" (click)="closeNewsDetail()">
+        <div class="news-reader-sheet" (click)="$event.stopPropagation()" *ngIf="selectedNews">
+            <div class="sheet-handle"></div>
+
+            <div class="reader-header">
+                <div class="reader-badge-wrap">
+                    <span class="news-category-badge" [ngClass]="getCategoryBadge(selectedNews).class">
+                        {{ getCategoryBadge(selectedNews).label }}
+                    </span>
+                    <span class="reader-date">
+                        <ion-icon name="calendar-outline"></ion-icon>
+                        {{ selectedNews.date }}
+                    </span>
+                </div>
+                <button type="button" class="btn-close-reader" (click)="closeNewsDetail()">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+            </div>
+
+            <div class="reader-body">
+                <h2 class="reader-title">{{ selectedNews.title }}</h2>
+
+                <div class="reader-meta" *ngIf="selectedNews.user">
+                    <div class="meta-item">
+                        <ion-icon name="person-circle-outline"></ion-icon>
+                        <span>{{ ipsu.T('home.publisher', { name: selectedNews.user }) }}</span>
+                    </div>
+                </div>
+
+                <div class="reader-divider"></div>
+
+                <div class="reader-content">
+                    <p *ngIf="selectedNews.detail">{{ selectedNews.detail }}</p>
+                    <p *ngIf="!selectedNews.detail">
+                        {{ ipsu.T('home.news_fallback') }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="reader-footer">
+                <button type="button" class="btn-done-reader" (click)="closeNewsDetail()">
+                    <span>{{ ipsu.T('home.close_window') }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. CAMPUS EMERGENCY HOTLINE MODAL -->
+    <div class="hotline-backdrop" [class.active]="isHotlineModalOpen" (click)="closeHotline()">
+        <div class="hotline-sheet" (click)="$event.stopPropagation()">
+            <div class="sheet-handle"></div>
+
+            <div class="hotline-header">
+                <div class="hotline-header-left">
+                    <div class="hotline-icon-badge">
+                        <ion-icon name="call"></ion-icon>
+                    </div>
+                    <div>
+                        <h2 class="hotline-title">{{ ipsu.T('home.hotline_title') }}</h2>
+                        <span class="hotline-sub">{{ ipsu.T('home.hotline_desc') }}</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close-hotline" (click)="closeHotline()">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+            </div>
+
+            <div class="hotline-list">
+                <a *ngFor="let item of hotlineList" [href]="'tel:' + item.tel" class="hotline-item">
+                    <div class="hotline-item-left">
+                        <div class="hotline-icon" [style.background]="item.color + '15'" [style.color]="item.color">
+                            <ion-icon [name]="item.icon"></ion-icon>
+                        </div>
+                        <div class="hotline-info">
+                            <span class="hotline-name">{{ item.name }}</span>
+                            <span class="hotline-dept">{{ item.dept }}</span>
+                            <span class="hotline-num">{{ item.displayTel }}</span>
+                        </div>
+                    </div>
+                    <div class="hotline-call-btn" [style.background]="item.color">
+                        <ion-icon name="call"></ion-icon>
+                        <span>{{ ipsu.T('home.call') }}</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</ion-content>
+
+<ion-modal [isOpen]="isProfilePhotoOpen" (didDismiss)="closeProfilePhoto()" class="lightbox-custom-modal">
+    <ng-template>
+        <div class="home-photo-lightbox" (click)="closeProfilePhoto()">
+            <div class="home-photo-container" (click)="$event.stopPropagation()">
+                <button type="button" class="btn-photo-close" (click)="closeProfilePhoto()" aria-label="ปิดรูป">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+
+                <div class="home-enlarged-frame">
+                    <img *ngIf="ipsu.auth.image"
+                         [src]="'data:image/jpeg;base64,' + ipsu.auth.image"
+                         alt="รูปโปรไฟล์ขนาดใหญ่"
+                         class="home-enlarged-img">
+                    <img *ngIf="!ipsu.auth.image"
+                         src="assets/imgs/no-user.png"
+                         alt="รูปโปรไฟล์เริ่มต้น"
+                         class="home-enlarged-img">
+                </div>
+
+                <div class="home-photo-caption">
+                    <h3>{{ (ipsu.language === 'en' ? ipsu.auth.fullname_en : ipsu.auth.fullname_th) || ipsu.auth.username }}</h3>
+                    <span>
+                        {{ ipsu.auth.group === 'student' ? ipsu.T('profile.student_id_short') : ipsu.T('profile.staff_id_short') }}
+                        {{ ipsu.auth.psu_id || ipsu.auth.username }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</ion-modal>

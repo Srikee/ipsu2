@@ -1,0 +1,90 @@
+<ion-header class="ion-no-border detail-header">
+    <ion-toolbar class="detail-toolbar">
+        <ion-buttons slot="start">
+            <button type="button" class="detail-header-btn" (click)="Back()" aria-label="back">
+                <ion-icon name="chevron-back-outline"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-title class="detail-title">{{ ipsu.T('eboard.detail_title') }}</ion-title>
+        <ion-buttons slot="end">
+            <button type="button" class="detail-header-btn" (click)="LoadData()" [class.spinning]="isLoading"
+                [attr.aria-label]="ipsu.T('common.refresh')">
+                <ion-icon name="sync-outline"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="detail-content">
+    <ion-refresher slot="fixed" (ionRefresh)="LoadData($event)">
+        <ion-refresher-content pullingIcon="chevron-down-circle-outline" refreshingSpinner="crescent">
+        </ion-refresher-content>
+    </ion-refresher>
+
+    <div class="detail-container">
+        <div class="detail-skeleton" *ngIf="!post && isLoading" aria-hidden="true">
+            <ion-skeleton-text [animated]="true" style="width: 50%"></ion-skeleton-text>
+            <ion-skeleton-text [animated]="true" style="width: 95%"></ion-skeleton-text>
+            <ion-skeleton-text [animated]="true" style="width: 85%"></ion-skeleton-text>
+            <ion-skeleton-text [animated]="true" style="width: 70%"></ion-skeleton-text>
+        </div>
+
+        <app-eboard-post-card *ngIf="post" [post]="post" [full]="true"></app-eboard-post-card>
+
+        <section class="comments-section" *ngIf="post">
+            <h2 class="comments-title">
+                {{ ipsu.T('eboard.comments_title') }}
+                <span class="comments-count" *ngIf="comments.length > 0">{{ comments.length }}</span>
+            </h2>
+
+            <p class="comments-empty" *ngIf="comments.length === 0 && !isLoading">{{ ipsu.T('eboard.no_comments') }}</p>
+
+            <div class="comment-item" *ngFor="let comment of comments; trackBy: TrackComment"
+                [class.editing]="editingComment?.id === comment.id">
+                <span class="comment-avatar" [style.background]="eboard.AvatarColor(comment.author)">
+                    <img *ngIf="eboard.AuthorImage(comment) as image; else initial" [src]="image" alt="">
+                    <ng-template #initial>{{ eboard.AuthorInitial(comment.author) }}</ng-template>
+                </span>
+                <div class="comment-main">
+                    <div class="comment-bubble">
+                        <div class="comment-author">
+                            <span class="author-name">{{ eboard.AuthorName(comment.author) }}</span>
+                            <span class="group-badge" [class.staff]="comment.author.group === 'staff'">
+                                {{ eboard.GroupLabel(comment.author.group) }}
+                            </span>
+                        </div>
+                        <p class="comment-text">{{ comment.content }}</p>
+                    </div>
+                    <div class="comment-meta">
+                        <span>{{ eboard.TimeAgo(comment.created_when) }}</span>
+                        <span *ngIf="comment.edited_when">• {{ ipsu.T('eboard.edited') }}</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-comment-more" (click)="OpenCommentMenu(comment)"
+                    [attr.aria-label]="ipsu.T('eboard.comment_menu_title')">
+                    <ion-icon name="ellipsis-horizontal"></ion-icon>
+                </button>
+            </div>
+        </section>
+    </div>
+</ion-content>
+
+<ion-footer class="ion-no-border comment-footer" *ngIf="post">
+    <div class="editing-bar" *ngIf="editingComment">
+        <ion-icon name="create-outline"></ion-icon>
+        <span>{{ ipsu.T('eboard.editing_comment') }}</span>
+        <button type="button" (click)="CancelEdit()">{{ ipsu.T('eboard.cancel_edit') }}</button>
+    </div>
+    <div class="comment-composer">
+        <textarea #commentInput class="comment-input" rows="1" [(ngModel)]="commentText" (input)="AutoResize()"
+            [placeholder]="ipsu.T('eboard.comment_placeholder')"></textarea>
+        <span class="comment-counter" *ngIf="commentLength > eboard.commentMaxLength - 50"
+            [class.over]="commentLength > eboard.commentMaxLength">
+            {{ eboard.commentMaxLength - commentLength }}
+        </span>
+        <button type="button" class="btn-send" [disabled]="!canSend" (click)="SendComment()"
+            [attr.aria-label]="ipsu.T('eboard.comment_send')">
+            <ion-icon [name]="editingComment ? 'checkmark' : 'send'"></ion-icon>
+        </button>
+    </div>
+</ion-footer>

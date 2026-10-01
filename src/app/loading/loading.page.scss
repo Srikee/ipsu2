@@ -1,0 +1,43 @@
+ion-content {
+    --background: #ffffff;
+}
+
+.my-content {
+    height: 100%;
+    background-color: #ffffff;
+    background-image: url("../../assets/imgs/splash.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.loading {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #003C71;
+
+    ion-spinner {
+        color: #003C71;
+    }
+}
+
+:host-context(.dark) {
+    ion-content {
+        --background: #0A214B;
+    }
+
+    .my-content {
+        background-color: #0A214B;
+        background-image: url("../../assets/imgs/splash-dark.png");
+    }
+
+    .loading,
+    .loading ion-spinner {
+        color: rgba(255, 255, 255, 0.85);
+    }
+}

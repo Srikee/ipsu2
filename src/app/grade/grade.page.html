@@ -1,0 +1,177 @@
+<ion-header class="ion-no-border grade-header">
+    <ion-toolbar class="grade-toolbar">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/tabs/information" text="" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ ipsu.T('grade.title') }}</ion-title>
+        <ion-buttons slot="end" class="header-actions">
+            <button type="button" class="term-button" (click)="openTermPicker()" [disabled]="isLoading"
+                [attr.aria-label]="ipsu.T('grade.choose_term')">
+                <span>{{ eduTerm ? (eduTerm + '/' + eduYear) : ipsu.T('grade.choose_term_short') }}</span>
+                <ion-icon name="chevron-down-outline"></ion-icon>
+            </button>
+            <button type="button" class="profile-header-action" (click)="LoadData(false)" [class.spinning]="isLoading"
+                [attr.aria-label]="ipsu.T('grade.refresh')">
+                <ion-icon name="sync-outline"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="grade-content">
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)" *ngIf="ipsu.auth.status">
+        <ion-refresher-content pullingIcon="chevron-down-circle-outline" refreshingSpinner="crescent"></ion-refresher-content>
+    </ion-refresher>
+
+    <main class="grade-container" *ngIf="ipsu.auth.status">
+        <section class="summary-card" *ngIf="hasLoadedData">
+            <div class="summary-heading">
+                <div>
+                    <span>{{ ipsu.T('grade.current_semester') }}</span>
+                    <h2>{{ termTitle() }}</h2>
+                </div>
+                <ion-icon name="school-outline"></ion-icon>
+            </div>
+            <div class="gpa-grid">
+                <div class="gpa-primary">
+                    <span>{{ ipsu.T('grade.semester_gpa') }}</span>
+                    <strong>{{ semesterGpa }}</strong>
+                </div>
+                <div>
+                    <span>{{ ipsu.T('grade.cumulative_gpa') }}</span>
+                    <strong>{{ cumulativeGpa }}</strong>
+                </div>
+                <div>
+                    <span>{{ ipsu.T('grade.semester_credits') }}</span>
+                    <strong>{{ semesterCredits }}</strong>
+                </div>
+                <div>
+                    <span>{{ ipsu.T('grade.course_count') }}</span>
+                    <strong>{{ grades.length }}</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="skeleton-list" *ngIf="isLoading && !hasLoadedData" aria-hidden="true">
+            <div class="summary-skeleton"><ion-skeleton-text [animated]="true"></ion-skeleton-text></div>
+            <div class="grade-skeleton" *ngFor="let item of [1, 2, 3, 4]">
+                <div>
+                    <ion-skeleton-text [animated]="true" style="width: 45%"></ion-skeleton-text>
+                    <ion-skeleton-text [animated]="true" style="width: 88%"></ion-skeleton-text>
+                    <ion-skeleton-text [animated]="true" style="width: 58%"></ion-skeleton-text>
+                </div>
+                <ion-skeleton-text [animated]="true" class="grade-badge-skeleton"></ion-skeleton-text>
+            </div>
+        </section>
+
+        <section class="result-section" *ngIf="hasLoadedData && grades.length > 0">
+            <div class="section-heading">
+                <div>
+                    <ion-icon name="reader-outline"></ion-icon>
+                    <h2>{{ ipsu.T('grade.course_results') }}</h2>
+                </div>
+                <span>{{ ipsu.T('grade.course_count_value', { count: grades.length }) }}</span>
+            </div>
+
+            <article class="grade-card" *ngFor="let item of grades; trackBy: trackByGrade">
+                <div class="course-details">
+                    <div class="course-code-row">
+                        <h3>{{ item.subjectCode || '-' }}</h3>
+                        <span *ngIf="item.section">{{ ipsu.T('grade.section', { section: item.section }) }}</span>
+                    </div>
+                    <p>{{ subjectName(item) || '-' }}</p>
+                    <div class="course-meta">
+                        <span><ion-icon name="layers-outline"></ion-icon>{{ ipsu.T('grade.credit_value', { credit: displayCredits(item.credit) }) }}</span>
+                        <span *ngIf="item.subjectTypeDesc"><ion-icon name="bookmark-outline"></ion-icon>{{ item.subjectTypeDesc }}</span>
+                    </div>
+                </div>
+                <div class="grade-badge" [ngClass]="gradeClass(item.grade)">
+                    <span>{{ ipsu.T('grade.grade_label') }}</span>
+                    <strong>{{ item.grade || '-' }}</strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="state-card" *ngIf="hasLoadedData && !loadError && grades.length === 0">
+            <div class="state-icon"><ion-icon name="school-outline"></ion-icon></div>
+            <h2>{{ ipsu.T('grade.empty_title') }}</h2>
+            <p>{{ ipsu.T('grade.empty_desc') }}</p>
+            <button type="button" (click)="openTermPicker()">
+                <ion-icon name="calendar-outline"></ion-icon>
+                {{ ipsu.T('grade.choose_other_term') }}
+            </button>
+        </section>
+
+        <section class="state-card error" *ngIf="!isLoading && loadError && grades.length === 0">
+            <div class="state-icon"><ion-icon name="cloud-offline-outline"></ion-icon></div>
+            <h2>{{ ipsu.T('grade.error_title') }}</h2>
+            <p>{{ ipsu.T('grade.error_desc') }}</p>
+            <button type="button" (click)="LoadData(true)">
+                <ion-icon name="refresh-outline"></ion-icon>
+                {{ ipsu.T('grade.try_again') }}
+            </button>
+        </section>
+    </main>
+
+    <div class="guest-wrap" *ngIf="!ipsu.auth.status">
+        <section class="state-card">
+            <div class="state-icon"><ion-icon name="lock-closed-outline"></ion-icon></div>
+            <h2>{{ ipsu.T('grade.login_title') }}</h2>
+            <p>{{ ipsu.T('grade.login_desc') }}</p>
+            <button type="button" (click)="promptLogin()">
+                <ion-icon name="log-in-outline"></ion-icon>
+                {{ ipsu.T('menu.login') }}
+            </button>
+        </section>
+    </div>
+</ion-content>
+
+<ion-modal [isOpen]="isTermModalOpen" (didDismiss)="closeTermModal()"
+    class="lightbox-custom-modal term-picker-modal" [class.dark-theme]="ipsu.isDarkTheme">
+    <ng-template>
+        <div class="term-modal-dialog">
+            <div class="term-modal-header">
+                <div class="header-icon-badge">
+                    <ion-icon name="ribbon"></ion-icon>
+                </div>
+                <div class="header-text-group">
+                    <h3 class="modal-title">{{ ipsu.T('grade.choose_term') }}</h3>
+                    <p class="modal-subtitle">{{ ipsu.T('grade.term_subtitle') }}</p>
+                </div>
+                <button type="button" class="btn-modal-close" (click)="closeTermModal()" [attr.aria-label]="ipsu.T('grade.close')">
+                    <ion-icon name="close"></ion-icon>
+                </button>
+            </div>
+
+            <div class="term-modal-body">
+                <div class="term-option-card" *ngFor="let item of availableTerms"
+                     [class.selected]="isSelectedTerm(item)" (click)="selectTerm(item)">
+                    <div class="card-icon-box">
+                        <ion-icon [name]="item.term === '3' ? 'sunny' : 'school'"></ion-icon>
+                    </div>
+                    <div class="card-info-box">
+                        <div class="card-title-row">
+                            <span class="card-term-title">{{ termTitle(item) }}</span>
+                            <span class="badge-latest" *ngIf="item.current">{{ ipsu.T('grade.current') }}</span>
+                        </div>
+                        <div class="card-meta-row">
+                            <ion-icon name="book-outline"></ion-icon>
+                            <span *ngIf="item.count !== null && item.count !== undefined">{{ ipsu.T('grade.result_count', { count: item.count }) }}</span>
+                            <span *ngIf="item.count === null || item.count === undefined">{{ ipsu.T('grade.tap_to_load') }}</span>
+                        </div>
+                    </div>
+                    <div class="card-check-box">
+                        <div class="check-dot" *ngIf="isSelectedTerm(item)">
+                            <ion-icon name="checkmark-sharp"></ion-icon>
+                        </div>
+                        <div class="uncheck-dot" *ngIf="!isSelectedTerm(item)"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="term-modal-footer">
+                <button type="button" class="btn-cancel-modal" (click)="closeTermModal()">{{ ipsu.T('common.cancel') }}</button>
+            </div>
+        </div>
+    </ng-template>
+</ion-modal>

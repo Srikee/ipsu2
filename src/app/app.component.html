@@ -1,0 +1,122 @@
+<ion-app>
+    <ion-split-pane contentId="main-content">
+        <ion-menu *ngIf="CurrUrl=='/tabs/home'" contentId="main-content" type="overlay" menuId="menu" side="start" class="modern-side-menu">
+            <ion-content class="menu-content" [scrollY]="true">
+                <div class="menu-container">
+
+                    <!-- 1. USER PROFILE HEADER -->
+                    <div class="menu-user-header" [class.logged-in]="ipsu.auth.status">
+                        <div class="header-ambient-glow"></div>
+
+                        <!-- Logged In State -->
+                        <div class="user-profile-box" *ngIf="ipsu.auth.status" (click)="openProfile()">
+                            <div class="user-profile-main">
+                                <div class="user-avatar-wrap">
+                                    <img *ngIf="ipsu.auth.image" [src]="'data:image/jpeg;base64,' + ipsu.auth.image" alt="Profile" class="user-avatar-img">
+                                    <img *ngIf="!ipsu.auth.image" src="assets/imgs/no-user.png" alt="Profile" class="user-avatar-img fallback-avatar">
+                                    <span class="avatar-active-dot"></span>
+                                </div>
+
+                                <div class="user-meta">
+                                    <h3 class="user-fullname">{{ (ipsu.language === 'en' ? ipsu.auth.fullname_en : ipsu.auth.fullname_th) || ipsu.auth.username }}</h3>
+                                    <p class="user-id" *ngIf="ipsu.auth.username">{{ ipsu.auth.username }}</p>
+                                    <div class="badge-role-wrap">
+                                        <span class="user-role-badge" [class.student]="ipsu.auth.type === 'student'" [class.staff]="ipsu.auth.type === 'staff'">
+                                            <ion-icon [name]="ipsu.auth.type === 'student' ? 'school' : 'briefcase'"></ion-icon>
+                                            <span>{{ (ipsu.auth.group || ipsu.auth.type) === 'student' ? ipsu.T('menu.student') : ((ipsu.auth.group || ipsu.auth.type) === 'staff' ? ipsu.T('menu.staff') : ipsu.T('menu.user')) }}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Guest / Not Logged In State -->
+                        <div class="guest-profile-box" *ngIf="!ipsu.auth.status">
+                            <div class="guest-brand">
+                                <img src="assets/imgs/ipsu-1.png" alt="iPSU Logo" class="guest-logo">
+                                <span class="guest-campus">{{ ipsu.T('menu.campus') }}</span>
+                            </div>
+                            <h3 class="guest-title">{{ ipsu.T('menu.welcome') }}</h3>
+                            <p class="guest-sub">{{ ipsu.T('menu.guest_description') }}</p>
+                            <button type="button" class="btn-menu-login" (click)="Login()">
+                                <ion-icon name="log-in-outline"></ion-icon>
+                                <span>{{ ipsu.T('menu.login') }}</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2. MENU SECTIONS -->
+                    <div class="menu-body">
+                        <div class="menu-group">
+                            <div class="menu-action-item" (click)="ChooseLanguage()">
+                                <div class="item-icon-box color-blue">
+                                    <ion-icon name="language-outline"></ion-icon>
+                                </div>
+                                <div class="item-text">
+                                    <span class="item-title">{{ ipsu.T('menu.language') }}</span>
+                                    <span class="item-subtitle">{{ ipsu.T('menu.language_subtitle') }}</span>
+                                </div>
+                                <span class="item-call-pill">{{ ipsu.language === 'th' ? 'ไทย' : 'EN' }}</span>
+                            </div>
+
+                            <div class="menu-action-item" (click)="ChooseTheme()">
+                                <div class="item-icon-box color-indigo">
+                                    <ion-icon [name]="ipsu.theme === 'dark' ? 'moon-outline' : (ipsu.theme === 'light' ? 'sunny-outline' : 'contrast-outline')"></ion-icon>
+                                </div>
+                                <div class="item-text">
+                                    <span class="item-title">{{ ipsu.T('menu.theme') }}</span>
+                                    <span class="item-subtitle">{{ ipsu.T('menu.theme_subtitle') }}</span>
+                                </div>
+                                <span class="item-call-pill theme-pill">{{ ipsu.T('theme.' + ipsu.theme) }}</span>
+                            </div>
+
+                            <div class="menu-action-item" *ngIf="ipsu.auth.status" (click)="navigateTo('/setting')">
+                                <div class="item-icon-box color-indigo">
+                                    <ion-icon name="lock-closed-outline"></ion-icon>
+                                </div>
+                                <div class="item-text">
+                                    <span class="item-title">{{ ipsu.T('menu.security') }}</span>
+                                    <span class="item-subtitle">{{ ipsu.T('menu.security_subtitle') }}</span>
+                                </div>
+                                <ion-icon name="chevron-forward-outline" class="item-arrow"></ion-icon>
+                            </div>
+
+                            <div class="menu-action-item" (click)="navigateTo('/about')">
+                                <div class="item-icon-box color-slate">
+                                    <ion-icon name="help-circle-outline"></ion-icon>
+                                </div>
+                                <div class="item-text">
+                                    <span class="item-title">{{ ipsu.T('menu.about') }}</span>
+                                    <span class="item-subtitle">{{ ipsu.T('menu.about_subtitle') }}</span>
+                                </div>
+                                <ion-icon name="chevron-forward-outline" class="item-arrow"></ion-icon>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- 3. FOOTER / LOGOUT -->
+                    <div class="menu-footer">
+                        <!-- Logout Button (if logged in) -->
+                        <div *ngIf="ipsu.auth.status" class="menu-logout-wrapper">
+                            <button type="button" class="btn-menu-logout" (click)="Logout()">
+                                <ion-icon name="log-out-outline"></ion-icon>
+                                <span>{{ ipsu.T('menu.logout') }}</span>
+                            </button>
+                        </div>
+
+                        <!-- App Version & Copyright -->
+                        <div class="menu-app-info">
+                            <span class="app-version">iPSU Version {{ ipsu.app.version_ios || '5.0.0' }}</span>
+                            <span class="app-copyright">{{ ipsu.T('menu.copyright') }}</span>
+                        </div>
+                    </div>
+
+                </div>
+            </ion-content>
+        </ion-menu>
+        <ion-router-outlet id="main-content"></ion-router-outlet>
+    </ion-split-pane>
+    <app-lock-screen *ngIf="lock.isLocked" mode="unlock" class="app-lock-overlay"></app-lock-screen>
+</ion-app>

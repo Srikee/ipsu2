@@ -1,0 +1,558 @@
+// =============================================================================
+// iPSU Side Drawer Menu Styles (Modern, Sleek & Functional)
+// =============================================================================
+
+:host {
+    font-family: 'Stidti', sans-serif;
+}
+
+// ต้องอยู่เหนือ ion-modal / ion-alert (z-index เริ่มที่ 20000)
+.app-lock-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+}
+
+.modern-side-menu {
+    --width: 310px;
+    --max-width: 85vw;
+
+    &::part(container) {
+        border-radius: 0;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
+
+    .menu-content {
+        --background: var(--app-background);
+        --color: var(--app-text-primary);
+        --padding-top: 0;
+        --padding-bottom: 0;
+        --padding-start: 0;
+        --padding-end: 0;
+    }
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+// -----------------------------------------------------------------------------
+// 1. USER PROFILE HEADER
+// -----------------------------------------------------------------------------
+.menu-user-header {
+    position: relative;
+    background: linear-gradient(145deg, #002b54 0%, #003C71 55%, #005696 100%);
+    color: #ffffff;
+    padding: calc(22px + var(--ion-safe-area-top, env(safe-area-inset-top, 0px))) 18px 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0, 43, 84, 0.25);
+
+    .header-ambient-glow {
+        position: absolute;
+        top: -30px;
+        right: -30px;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(2, 132, 199, 0.4) 0%, rgba(0, 43, 84, 0) 70%);
+        pointer-events: none;
+    }
+
+    // Logged In State
+    .user-profile-box {
+        position: relative;
+        z-index: 1;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+
+        .user-profile-main {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .user-avatar-wrap {
+            position: relative;
+            width: 58px;
+            height: 66px;
+            flex: 0 0 58px;
+            border-radius: 14px;
+            border: 2.5px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+            .user-avatar-img {
+                width: 100%;
+                height: 100%;
+                border-radius: 10px;
+                object-fit: cover;
+                display: block;
+            }
+
+            .avatar-active-dot {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                width: 13px;
+                height: 13px;
+                border-radius: 50%;
+                background: #10b981;
+                border: 2.5px solid #003C71;
+            }
+        }
+
+        .user-meta {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 3px;
+            flex: 1;
+            min-width: 0;
+
+            .user-fullname {
+                margin: 0;
+                font-size: 15px;
+                font-weight: 700;
+                color: #ffffff;
+                line-height: 1.3;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .user-id {
+                margin: 0 0 3px 0;
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.8);
+                font-weight: 500;
+                letter-spacing: 0.3px;
+            }
+
+            .badge-role-wrap {
+                display: flex;
+            }
+
+            .user-role-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                font-size: 11px;
+                font-weight: 600;
+                padding: 3px 9px;
+                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.2);
+                border: 1px solid rgba(255, 255, 255, 0.28);
+                color: #ffffff;
+
+                &.student {
+                    background: rgba(251, 191, 36, 0.25);
+                    border-color: rgba(251, 191, 36, 0.45);
+                    color: #fef08a;
+                }
+
+                &.staff {
+                    background: rgba(52, 211, 153, 0.25);
+                    border-color: rgba(52, 211, 153, 0.45);
+                    color: #a7f3d0;
+                }
+
+                ion-icon {
+                    font-size: 12px;
+                }
+            }
+        }
+
+        &:active {
+            opacity: 0.92;
+        }
+    }
+
+    // Guest State
+    .guest-profile-box {
+        position: relative;
+        z-index: 1;
+
+        .guest-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+
+            .guest-logo {
+                height: 28px;
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            }
+
+            .guest-campus {
+                font-size: 11px;
+                color: rgba(255, 255, 255, 0.85);
+                font-weight: 500;
+            }
+        }
+
+        .guest-title {
+            margin: 0 0 4px 0;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .guest-sub {
+            margin: 0 0 14px 0;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        .btn-menu-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            height: 40px;
+            border-radius: 12px;
+            background: #ffffff;
+            color: #003C71;
+            font-size: 13px;
+            font-weight: 700;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            ion-icon {
+                font-size: 17px;
+                color: #005696;
+            }
+
+            &:active {
+                transform: scale(0.97);
+                background: #f1f5f9;
+            }
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// 2. MENU BODY & ACTION ITEMS
+// -----------------------------------------------------------------------------
+.menu-body {
+    flex: 1;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.menu-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .menu-group-label {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        color: #94a3b8;
+        padding: 0 6px;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+    }
+}
+
+.menu-action-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: var(--app-surface);
+    border: 1px solid var(--app-border-color);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    .item-icon-box {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+        flex-shrink: 0;
+
+        &.color-blue {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        &.color-green {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        &.color-rose {
+            background: #ffe4e6;
+            color: #e11d48;
+        }
+
+        &.color-cyan {
+            background: #cffafe;
+            color: #0891b2;
+        }
+
+        &.color-red {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        &.color-amber {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        &.color-indigo {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        &.color-slate {
+            background: #f1f5f9;
+            color: #475569;
+        }
+    }
+
+    .item-text {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+
+        .item-title {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--app-text-primary);
+            line-height: 1.25;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-subtitle {
+            font-size: 10.5px;
+            color: var(--app-text-secondary);
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .item-arrow {
+        font-size: 14px;
+        color: #cbd5e1;
+        flex-shrink: 0;
+        transition: transform 0.2s ease;
+    }
+
+    .item-arrow-ext {
+        font-size: 14px;
+        color: #94a3b8;
+        flex-shrink: 0;
+    }
+
+    .item-badge-count {
+        min-width: 18px;
+        height: 18px;
+        border-radius: 9px;
+        background: #ef4444;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 5px;
+        flex-shrink: 0;
+    }
+
+    .item-call-pill {
+        font-size: 11px;
+        font-weight: 700;
+        color: #ffffff;
+        background: #ef4444;
+        padding: 2px 8px;
+        border-radius: 8px;
+        flex-shrink: 0;
+
+        &.theme-pill {
+            max-width: 68px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            background: #4f46e5;
+        }
+    }
+
+    &:hover {
+        background: #f1f5f9;
+
+        .item-arrow {
+            transform: translateX(2px);
+            color: #0284c7;
+        }
+    }
+
+    &:active {
+        transform: scale(0.975);
+        background: #e2e8f0;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// 3. MENU FOOTER & LOGOUT
+// -----------------------------------------------------------------------------
+.menu-footer {
+    padding: 14px 16px 28px 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    background: var(--app-surface);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .btn-menu-logout {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        height: 42px;
+        border-radius: 12px;
+        background: #fef2f2;
+        border: 1px solid #fee2e2;
+        color: #dc2626;
+        font-size: 13.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        ion-icon {
+            font-size: 18px;
+        }
+
+        &:hover {
+            background: #fee2e2;
+        }
+
+        &:active {
+            transform: scale(0.97);
+            background: #fecaca;
+        }
+    }
+
+    .btn-menu-login-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        height: 42px;
+        border-radius: 12px;
+        background: #e0f2fe;
+        border: 1px solid #bae6fd;
+        color: #0284c7;
+        font-size: 13.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        ion-icon {
+            font-size: 18px;
+        }
+
+        &:active {
+            transform: scale(0.97);
+            background: #bae6fd;
+        }
+    }
+
+    .menu-app-info {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        .app-version {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .app-copyright {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// 4. DARK MODE ENHANCEMENTS
+// -----------------------------------------------------------------------------
+:host-context(.dark) {
+    .modern-side-menu {
+        .menu-content {
+            --background: #0b1120;
+            --color: #f8fafc;
+        }
+    }
+
+    .menu-action-item {
+        background: #1e293b;
+        border-color: rgba(255, 255, 255, 0.06);
+
+        .item-text {
+            .item-title {
+                color: #f8fafc;
+            }
+
+            .item-subtitle {
+                color: #94a3b8;
+            }
+        }
+
+        &:hover {
+            background: #334155;
+        }
+
+        &:active {
+            background: #475569;
+        }
+    }
+
+    .menu-footer {
+        background: #0f172a;
+        border-top-color: rgba(255, 255, 255, 0.08);
+
+        .btn-menu-logout {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .menu-app-info {
+            .app-version {
+                color: #94a3b8;
+            }
+
+            .app-copyright {
+                color: #64748b;
+            }
+        }
+    }
+}

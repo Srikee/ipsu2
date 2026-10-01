@@ -1,0 +1,392 @@
+:host {
+    --psu-blue: #005696;
+    --accent: #0284c7;
+    --page-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --input-bg: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border-light: rgba(0, 0, 0, 0.06);
+    --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.05);
+    font-family: 'Stidti', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+// -----------------------------------------------------------------------------
+// HEADER
+// -----------------------------------------------------------------------------
+.eboard-header {
+    background: linear-gradient(135deg, #002b54 0%, #003C71 60%, #005696 100%);
+    box-shadow: 0 4px 18px rgba(0, 43, 84, 0.18);
+
+    .eboard-toolbar {
+        --background: transparent;
+        --color: #ffffff;
+        --border-width: 0;
+        --min-height: 52px;
+        padding: max(4px, var(--ion-safe-area-top, env(safe-area-inset-top, 0px))) 6px 6px;
+    }
+
+    .btn-back {
+        --color: #ffffff;
+        font-size: 24px;
+    }
+}
+
+.page-title {
+    padding: 0 8px;
+
+    .main-title {
+        display: block;
+        font-size: 17px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: -0.2px;
+        line-height: 1.2;
+    }
+
+    .sub-title {
+        display: block;
+        font-size: 11.5px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.3;
+    }
+}
+
+.header-actions {
+    margin-right: 4px;
+
+    .profile-header-action {
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        color: #ffffff;
+        background: transparent;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s ease;
+
+        ion-icon {
+            font-size: 24px;
+        }
+
+        &:active {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        &.spinning ion-icon {
+            animation: spin 1s linear infinite;
+        }
+    }
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+// -----------------------------------------------------------------------------
+// FEED
+// -----------------------------------------------------------------------------
+.eboard-content {
+    --background: var(--page-bg);
+}
+
+.feed-container {
+    padding: 10px 12px 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.compose-prompt {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 10px;
+    border-radius: 14px;
+    border: 1px solid var(--border-light);
+    background: var(--card-bg);
+    box-shadow: var(--shadow-card);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    .compose-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .compose-placeholder {
+        flex: 1;
+        min-width: 0;
+        height: 32px;
+        line-height: 32px;
+        padding: 0 14px;
+        border-radius: 999px;
+        background: var(--input-bg);
+        color: var(--text-muted);
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .compose-icon {
+        font-size: 19px;
+        color: var(--accent);
+        flex-shrink: 0;
+    }
+
+    &:active {
+        transform: scale(0.99);
+    }
+}
+
+.feed-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .skeleton-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-light);
+        border-radius: 14px;
+        padding: 10px 12px;
+
+        ion-skeleton-text {
+            height: 12px;
+            margin: 0 0 8px;
+            border-radius: 5px;
+        }
+    }
+
+    .skeleton-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+
+        .skeleton-avatar {
+            width: 32px;
+            height: 32px;
+            margin: 0;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .skeleton-lines {
+            flex: 1;
+        }
+    }
+}
+
+.feed-empty {
+    text-align: center;
+    padding: 36px 20px;
+    border-radius: 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+
+    .empty-icon-box {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 14px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+        color: var(--accent);
+        font-size: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    h3 {
+        margin: 0 0 6px;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    p {
+        margin: 0 0 16px;
+        font-size: 13px;
+        color: var(--text-secondary);
+    }
+
+    .btn-empty-post {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 40px;
+        padding: 0 18px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #005696 0%, #0284c7 100%);
+        color: #ffffff;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+
+        ion-icon {
+            font-size: 18px;
+        }
+    }
+}
+
+.feed-end {
+    margin: 6px 0 0;
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--text-muted);
+}
+
+.eboard-fab {
+    position: absolute;
+    right: 16px;
+    bottom: calc(16px + var(--ion-safe-area-bottom, 0px));
+    height: 40px;
+    padding: 0 14px 0 11px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #005696 0%, #0284c7 100%);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 700;
+    box-shadow: 0 6px 16px rgba(0, 86, 150, 0.3);
+    cursor: pointer;
+    z-index: 10;
+
+    ion-icon {
+        font-size: 19px;
+    }
+
+    &:active {
+        transform: scale(0.96);
+    }
+}
+
+// -----------------------------------------------------------------------------
+// GUEST STATE
+// -----------------------------------------------------------------------------
+.guest-wrap {
+    padding: 32px 16px;
+    max-width: 420px;
+    margin: 0 auto;
+
+    .guest-card {
+        background: var(--card-bg);
+        border-radius: 22px;
+        padding: 32px 22px;
+        text-align: center;
+        border: 1px solid var(--border-light);
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+
+        .guest-icon-box {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: #e0f2fe;
+            color: var(--psu-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 16px auto;
+            box-shadow: 0 0 0 8px rgba(224, 242, 254, 0.6);
+        }
+
+        h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin: 0 0 20px 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.55;
+        }
+
+        .btn-guest-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            height: 46px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #005696 0%, #0284c7 100%);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            box-shadow: 0 4px 14px rgba(0, 86, 150, 0.35);
+            cursor: pointer;
+
+            ion-icon {
+                font-size: 18px;
+            }
+
+            &:active {
+                transform: scale(0.97);
+            }
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// DARK THEME
+// -----------------------------------------------------------------------------
+:host-context(.dark) {
+    --accent: #38bdf8;
+    --page-bg: #0b1120;
+    --card-bg: #1e293b;
+    --input-bg: #263447;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border-light: rgba(255, 255, 255, 0.08);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.24);
+
+    .feed-empty .empty-icon-box {
+        background: rgba(56, 189, 248, 0.14);
+    }
+
+    .guest-wrap .guest-card .guest-icon-box {
+        background: rgba(56, 189, 248, 0.14);
+        color: #38bdf8;
+        box-shadow: 0 0 0 8px rgba(56, 189, 248, 0.06);
+    }
+}

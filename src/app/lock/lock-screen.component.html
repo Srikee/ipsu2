@@ -1,0 +1,57 @@
+<div class="lock-screen">
+    <div class="lock-top">
+        <button *ngIf="mode !== 'unlock'" type="button" class="btn-close" (click)="Cancel()" [attr.aria-label]="ipsu.T('common.cancel')">
+            <ion-icon name="close-outline"></ion-icon>
+        </button>
+    </div>
+
+    <div class="lock-head">
+        <div class="lock-avatar" *ngIf="mode === 'unlock'">
+            <img *ngIf="ipsu.auth.image" [src]="'data:image/jpeg;base64,' + ipsu.auth.image" alt="">
+            <img *ngIf="!ipsu.auth.image" src="assets/imgs/no-user.png" alt="">
+        </div>
+        <div class="lock-icon" *ngIf="mode !== 'unlock'">
+            <ion-icon name="lock-closed"></ion-icon>
+        </div>
+
+        <h2 class="lock-title">{{ title }}</h2>
+        <p class="lock-subtitle" [class.is-wait]="waitSeconds > 0">{{ subtitle }}</p>
+
+        <div class="pin-dots" [class.shake]="shake">
+            <span *ngFor="let d of dots; let i = index" class="dot" [class.filled]="i < pin.length"></span>
+        </div>
+        <p class="lock-error">{{ errorText }}</p>
+    </div>
+
+    <div class="keypad" [class.disabled]="waitSeconds > 0">
+        <button *ngFor="let k of keys" type="button" class="key" (click)="Press(k)">{{ k }}</button>
+
+        <button *ngIf="showBiometric" type="button" class="key key-icon" (click)="UseBiometric()" [attr.aria-label]="lock.BiometricLabel()">
+            <ion-icon [name]="lock.biometricType === 'face' ? 'scan-outline' : 'finger-print-outline'"></ion-icon>
+        </button>
+        <span *ngIf="!showBiometric" class="key-spacer"></span>
+
+        <button type="button" class="key" (click)="Press('0')">0</button>
+
+        <button type="button" class="key key-icon" (click)="Backspace()" [attr.aria-label]="ipsu.T('lock.delete')">
+            <ion-icon name="backspace-outline"></ion-icon>
+        </button>
+    </div>
+
+    <div class="lock-bottom">
+        <button *ngIf="mode !== 'setup'" type="button" class="btn-link" (click)="ForgotPin()">
+            {{ ipsu.T('lock.forgot') }}
+        </button>
+    </div>
+
+    <div class="forgot-backdrop" *ngIf="confirmForgot" (click)="CancelForgot()">
+        <div class="forgot-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+            <h3>{{ ipsu.T('lock.forgot') }}</h3>
+            <p>{{ ipsu.T('lock.forgot_confirm') }}</p>
+            <div class="forgot-actions">
+                <button type="button" class="btn-cancel" (click)="CancelForgot()">{{ ipsu.T('common.cancel') }}</button>
+                <button type="button" class="btn-danger" (click)="ConfirmForgot()">{{ ipsu.T('menu.logout') }}</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+<ion-header class="ion-no-border compose-header">
+    <ion-toolbar class="compose-toolbar">
+        <ion-buttons slot="start">
+            <button type="button" class="compose-header-btn" (click)="Close()" [attr.aria-label]="ipsu.T('common.cancel')">
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-title class="compose-title">{{ ipsu.T(isEdit ? 'eboard.edit_title' : 'eboard.compose_title') }}</ion-title>
+        <ion-buttons slot="end">
+            <button type="button" class="btn-submit" [disabled]="!canSubmit" (click)="Submit()">
+                {{ ipsu.T(isEdit ? 'eboard.save' : 'eboard.submit') }}
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="compose-content">
+    <div class="compose-body">
+        <div class="compose-author">
+            <span class="compose-avatar" [style.background]="eboard.AvatarColor(myAuthor)">
+                <img *ngIf="eboard.AuthorImage({ is_owner: true }) as image; else myInitial" [src]="image" alt="">
+                <ng-template #myInitial>{{ eboard.AuthorInitial(myAuthor) }}</ng-template>
+            </span>
+            <div class="author-text">
+                <span class="author-name">{{ eboard.AuthorName(myAuthor) }}</span>
+                <span class="group-badge" [class.staff]="ipsu.auth.group === 'staff'">{{ eboard.GroupLabel(ipsu.auth.group) }}</span>
+            </div>
+        </div>
+
+        <textarea #textarea class="compose-textarea" [(ngModel)]="content"
+            [placeholder]="ipsu.T('eboard.compose_placeholder')" rows="9"></textarea>
+
+        <div class="compose-footer">
+            <span class="community-note">
+                <ion-icon name="shield-checkmark-outline"></ion-icon>
+                {{ ipsu.T('eboard.community_note') }}
+            </span>
+            <span class="char-counter" [class.over]="isOverLimit">{{ length }}/{{ eboard.postMaxLength }}</span>
+        </div>
+    </div>
+</ion-content>

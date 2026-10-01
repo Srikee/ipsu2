@@ -1,0 +1,101 @@
+{
+    "name": "ipsu",
+    "version": "5.0.0",
+    "author": "iPSU Pattani Team",
+    "homepage": "http://ipsu.pn.psu.ac.th/",
+    "scripts": {
+        "ng": "ng",
+        "start": "ng serve",
+        "build": "ng build",
+        "watch": "ng build --watch --configuration development",
+        "test": "ng test",
+        "lint": "ng lint"
+    },
+    "private": true,
+    "dependencies": {
+        "@angular/animations": "20.3.32",
+        "@angular/common": "20.3.32",
+        "@angular/compiler": "20.3.32",
+        "@angular/core": "20.3.32",
+        "@angular/forms": "20.3.32",
+        "@angular/platform-browser": "20.3.32",
+        "@angular/platform-browser-dynamic": "20.3.32",
+        "@angular/router": "20.3.32",
+        "@awesome-cordova-plugins/in-app-browser": "^9.2.0",
+        "@ionic/angular": "^8.0.0",
+        "@ionic/cordova-builders": "^12.2.0",
+        "@ionic/storage-angular": "^4.0.0",
+        "@types/jquery": "^3.5.32",
+        "@types/qrcode": "^1.5.6",
+        "ionicons": "^7.0.0",
+        "jquery": "^3.7.1",
+        "qrcode": "^1.5.4",
+        "rxjs": "~7.8.0",
+        "swiper": "^11.2.10",
+        "tslib": "^2.3.0",
+        "zone.js": "~0.15.0"
+    },
+    "devDependencies": {
+        "@angular-devkit/build-angular": "20.3.32",
+        "@angular-eslint/builder": "^20.0.0",
+        "@angular-eslint/eslint-plugin": "^20.0.0",
+        "@angular-eslint/eslint-plugin-template": "^20.0.0",
+        "@angular-eslint/schematics": "^20.0.0",
+        "@angular-eslint/template-parser": "^20.0.0",
+        "@angular/cli": "20.3.32",
+        "@angular/compiler-cli": "20.3.32",
+        "@angular/language-service": "20.3.32",
+        "@ionic/angular-toolkit": "^12.0.0",
+        "@types/jasmine": "~5.1.0",
+        "@typescript-eslint/eslint-plugin": "^8.18.0",
+        "@typescript-eslint/parser": "^8.18.0",
+        "cordova-android": "^15.0.0",
+        "cordova-ios": "^8.1.0",
+        "cordova-plugin-device": "2.0.2",
+        "cordova-plugin-fingerprint-aio": "^6.0.1",
+        "cordova-plugin-inappbrowser": "^7.0.0",
+        "cordova-plugin-ionic-keyboard": "^2.2.0",
+        "cordova-plugin-ionic-webview": "^5.0.0",
+        "cordova-plugin-ipsu-deeplink": "file:cordova-plugin-ipsu-deeplink",
+        "cordova-plugin-splashscreen": "5.0.2",
+        "cordova-plugin-statusbar": "^2.4.2",
+        "eslint": "^9.16.0",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-jsdoc": "^48.2.1",
+        "eslint-plugin-prefer-arrow": "1.2.2",
+        "jasmine-core": "~5.1.0",
+        "jasmine-spec-reporter": "~5.0.0",
+        "karma": "~6.4.0",
+        "karma-chrome-launcher": "~3.2.0",
+        "karma-coverage": "~2.2.0",
+        "karma-jasmine": "~5.1.0",
+        "karma-jasmine-html-reporter": "~2.1.0",
+        "onesignal-cordova-plugin": "^5.5.0",
+        "typescript": "~5.8.0"
+    },
+    "description": "An Ionic project",
+    "cordova": {
+        "plugins": {
+            "cordova-plugin-statusbar": {},
+            "cordova-plugin-device": {},
+            "cordova-plugin-splashscreen": {},
+            "cordova-plugin-ionic-webview": {},
+            "cordova-plugin-inappbrowser": {},
+            "cordova-plugin-ionic-keyboard": {},
+            "onesignal-cordova-plugin": {},
+            "cordova-plugin-fingerprint-aio": {
+                "FACEID_USAGE_DESCRIPTION": "iPSU ใช้ Face ID เพื่อปลดล็อกแอปแทนการใส่รหัส PIN"
+            },
+            "cordova-plugin-ipsu-deeplink": {
+                "URL_SCHEME": "ipsu",
+                "DEEPLINK_SCHEME": "https",
+                "DEEPLINK_HOST": "ipsu.pn.psu.ac.th",
+                "ANDROID_PATH_PREFIX": "/callback"
+            }
+        },
+        "platforms": [
+            "android",
+            "ios"
+        ]
+    }
+}

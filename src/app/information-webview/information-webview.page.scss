@@ -1,0 +1,346 @@
+// =============================================================================
+// iPSU Smart Campus - Webview Page Styles (Clean, Native & Premium)
+// =============================================================================
+
+:host {
+    --psu-blue: #005696;
+    --psu-navy: #003C71;
+    --psu-deep: #002b54;
+    --psu-sky: #0284c7;
+    --page-bg: #f8fafc;
+    font-family: 'Stidti', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+// -----------------------------------------------------------------------------
+// 1. HEADER & TOOLBAR
+// -----------------------------------------------------------------------------
+.webview-header {
+    background: linear-gradient(135deg, #002b54 0%, #003C71 60%, #005696 100%);
+    box-shadow: 0 4px 16px rgba(0, 43, 84, 0.16);
+
+    .webview-toolbar {
+        --background: transparent;
+        --color: #ffffff;
+        --border-width: 0;
+        --min-height: 52px;
+        padding: var(--ion-safe-area-top, env(safe-area-inset-top, 0px)) 4px 0;
+
+        .btn-back {
+            --color: #ffffff;
+            font-size: 20px;
+        }
+
+        .webview-title {
+            padding: 0 4px;
+
+            .title-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+
+                .main-title {
+                    font-size: 15px;
+                    font-weight: 700;
+                    color: #ffffff;
+                    letter-spacing: -0.2px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 200px;
+                }
+
+                .sub-url {
+                    font-size: 11px;
+                    font-weight: 500;
+                    color: rgba(255, 255, 255, 0.75);
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 3px;
+                    max-width: 200px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+
+                    .ssl-icon {
+                        font-size: 10px;
+                        color: #38bdf8;
+                    }
+                }
+            }
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding-right: 6px;
+
+            .btn-header-action {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                background: rgba(255, 255, 255, 0.14);
+                color: #ffffff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                cursor: pointer;
+                transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+                ion-icon {
+                    font-size: 18px;
+                }
+
+                &:active {
+                    transform: scale(0.92);
+                    background: rgba(255, 255, 255, 0.28);
+                }
+
+                &.spinning ion-icon {
+                    animation: spin 1s linear infinite;
+                }
+            }
+        }
+    }
+
+    .webview-progress {
+        --progress-background: #0284c7;
+        --buffer-background: transparent;
+        height: 3px;
+    }
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+// -----------------------------------------------------------------------------
+// 2. MAIN CONTENT & IFRAME
+// -----------------------------------------------------------------------------
+.webview-content {
+    --background: #f8fafc;
+    position: relative;
+    overflow: hidden;
+
+    .webview-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+        background: #ffffff;
+    }
+
+    // Centered Loader Card
+    .webview-loader {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(248, 250, 252, 0.88);
+        backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        pointer-events: none;
+
+        .loader-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+
+            ion-spinner {
+                width: 36px;
+                height: 36px;
+                --color: var(--psu-blue);
+            }
+
+            .loader-text {
+                font-size: 14px;
+                font-weight: 700;
+                color: #0f172a;
+                margin-top: 4px;
+            }
+
+            .loader-sub {
+                font-size: 12px;
+                color: #64748b;
+            }
+        }
+    }
+
+    // Bottom Help Banner
+    .webview-hint-banner {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        right: 12px;
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        z-index: 20;
+        animation: slideUp 0.3s ease-out;
+
+        .hint-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #475569;
+
+            ion-icon {
+                font-size: 18px;
+                color: #f59e0b;
+                flex-shrink: 0;
+            }
+        }
+
+        .btn-hint-open {
+            background: linear-gradient(135deg, #002b54 0%, #005696 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-size: 11.5px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+
+            &:active {
+                transform: scale(0.95);
+            }
+        }
+    }
+
+    // Empty State
+    .empty-state {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        text-align: center;
+
+        .empty-icon-box {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 6px 0;
+        }
+
+        p {
+            font-size: 13px;
+            color: #64748b;
+            margin: 0 0 20px 0;
+        }
+
+        .btn-back-home {
+            background: var(--psu-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+:host-context(.dark) {
+    --page-bg: #0b1120;
+
+    .webview-content {
+        --background: var(--page-bg);
+
+        .webview-loader {
+            background: rgba(11, 17, 32, 0.88);
+
+            .loader-card {
+                background: #1e293b;
+                border-color: #334155;
+                box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
+
+                .loader-text {
+                    color: #f8fafc;
+                }
+
+                .loader-sub {
+                    color: #94a3b8;
+                }
+            }
+        }
+
+        .webview-hint-banner {
+            background: #1e293b;
+            border-color: #334155;
+
+            .hint-left {
+                color: #cbd5e1;
+            }
+        }
+
+        .empty-state {
+            .empty-icon-box {
+                background: #334155;
+                color: #cbd5e1;
+            }
+
+            h3 {
+                color: #f8fafc;
+            }
+
+            p {
+                color: #94a3b8;
+            }
+        }
+    }
+}

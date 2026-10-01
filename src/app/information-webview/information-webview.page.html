@@ -1,0 +1,79 @@
+<ion-header class="ion-no-border webview-header">
+    <ion-toolbar class="webview-toolbar">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/tabs/information" text="" icon="chevron-back-outline" class="btn-back">
+            </ion-back-button>
+        </ion-buttons>
+
+        <ion-title class="webview-title">
+            <div class="title-container">
+                <span class="main-title">{{ displayTitle || ipsu.T('information_webview.title') }}</span>
+                <span class="sub-url" *ngIf="displayHost">
+                    <ion-icon name="lock-closed-outline" class="ssl-icon"></ion-icon>
+                    <span>{{ displayHost }}</span>
+                </span>
+            </div>
+        </ion-title>
+
+        <ion-buttons slot="end" class="header-actions">
+            <!-- Reload Button -->
+            <button type="button" class="btn-header-action" (click)="reload()" [class.spinning]="isLoading"
+                [attr.aria-label]="ipsu.T('information_webview.reload')" [title]="ipsu.T('information_webview.reload')">
+                <ion-icon name="sync-outline"></ion-icon>
+            </button>
+
+            <!-- Open in External Browser -->
+            <button type="button" class="btn-header-action" (click)="openInBrowser()"
+                [attr.aria-label]="ipsu.T('information_webview.open_browser')"
+                [title]="ipsu.T('information_webview.open_browser')">
+                <ion-icon name="open-outline"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+
+    <!-- Top Loading Progress Bar -->
+    <ion-progress-bar type="indeterminate" *ngIf="isLoading" class="webview-progress"></ion-progress-bar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="webview-content">
+
+    <!-- 1. Centered Loading Placeholder Overlay -->
+    <div class="webview-loader" *ngIf="isLoading">
+        <div class="loader-card">
+            <ion-spinner name="crescent" color="primary"></ion-spinner>
+            <span class="loader-text">{{ ipsu.T('information_webview.loading', { title: displayTitle || ipsu.T('information_webview.system_title') }) }}</span>
+            <span class="loader-sub">{{ ipsu.T('information_webview.please_wait') }}</span>
+        </div>
+    </div>
+
+    <!-- 2. The Iframe itself (Clean Angular Binding, No jQuery) -->
+    <iframe *ngIf="safeUrl" [src]="safeUrl" class="webview-iframe" (load)="onIframeLoad()" frameborder="0"
+        allowfullscreen
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads">
+    </iframe>
+
+    <!-- 3. Helper bottom banner if site takes long or blocks iframe -->
+    <div class="webview-hint-banner" *ngIf="hasLoadTimeout">
+        <div class="hint-left">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <span>{{ ipsu.T('information_webview.blocked_hint') }}</span>
+        </div>
+        <button type="button" class="btn-hint-open" (click)="openInBrowser()">
+            <span>{{ ipsu.T('information_webview.open_browser') }}</span>
+            <ion-icon name="open-outline"></ion-icon>
+        </button>
+    </div>
+
+    <!-- 4. Empty State if no URL provided -->
+    <div class="empty-state" *ngIf="!rawUrl && !isLoading">
+        <div class="empty-icon-box">
+            <ion-icon name="globe-outline"></ion-icon>
+        </div>
+        <h3>{{ ipsu.T('information_webview.missing_title') }}</h3>
+        <p>{{ ipsu.T('information_webview.missing_description') }}</p>
+        <button type="button" class="btn-back-home" (click)="ipsu.Back()">
+            <span>{{ ipsu.T('information_webview.back') }}</span>
+        </button>
+    </div>
+
+</ion-content>

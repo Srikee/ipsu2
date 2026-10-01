@@ -1,0 +1,56 @@
+<ion-content [fullscreen]="true">
+    <swiper-container [pagination]="{ clickable: true }">
+        <swiper-slide id="slide-1">
+            <div class="slide-body">
+                <div class="title">{{ ipsu.T('title.intro_title') }}</div>
+                <div class="detail">{{ ipsu.T('title.intro_detail') }}</div>
+            </div>
+        </swiper-slide>
+
+        <swiper-slide id="slide-2">
+            <div class="slide-body language-slide-body">
+                <div class="language-card">
+                    <div class="title">{{ ipsu.T('title.language_title') }}</div>
+                    <div class="detail">{{ ipsu.T('title.language_detail') }}</div>
+
+                    <div class="language-options" role="group" [attr.aria-label]="ipsu.T('title.language_title')">
+                        <button type="button" class="language-option" [class.selected]="ipsu.language === 'th'"
+                            [attr.aria-pressed]="ipsu.language === 'th'" (click)="setLanguage('th')">
+                            <span class="language-code">TH</span>
+                            <span class="language-name">{{ ipsu.T('title.language_th') }}</span>
+                            <ion-icon name="checkmark-circle"></ion-icon>
+                        </button>
+
+                        <button type="button" class="language-option" [class.selected]="ipsu.language === 'en'"
+                            [attr.aria-pressed]="ipsu.language === 'en'" (click)="setLanguage('en')">
+                            <span class="language-code">EN</span>
+                            <span class="language-name">{{ ipsu.T('title.language_en') }}</span>
+                            <ion-icon name="checkmark-circle"></ion-icon>
+                        </button>
+                    </div>
+
+                    <span class="language-selected-hint">
+                        {{ ipsu.T('title.language_selected') }}: {{ ipsu.language === 'th' ? ipsu.T('title.language_th') : ipsu.T('title.language_en') }}
+                    </span>
+                </div>
+            </div>
+        </swiper-slide>
+
+        <swiper-slide id="slide-3">
+            <div class="slide-body">
+                <div class="title">{{ ipsu.T('title.notification_title') }}</div>
+                <div class="detail">{{ ipsu.T('title.notification_detail') }}</div>
+            </div>
+        </swiper-slide>
+
+        <swiper-slide id="slide-4">
+            <div class="slide-body">
+                <div class="title">{{ ipsu.T('title.start_title') }}</div>
+                <div class="detail">{{ ipsu.T('title.start_detail') }}</div>
+                <ion-button color="psu" size="large" (click)="GoToStart()">
+                    {{ ipsu.T('title.start_button') }}
+                </ion-button>
+            </div>
+        </swiper-slide>
+    </swiper-container>
+</ion-content>

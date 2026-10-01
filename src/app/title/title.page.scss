@@ -1,0 +1,261 @@
+swiper-container {
+    width: 100%;
+    height: 100%;
+}
+
+swiper-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#slide-1::after,
+#slide-2::after,
+#slide-3::after,
+#slide-4::after {
+    content: "";
+    opacity: 0.9;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#slide-1::after {
+    background-image: url('../../assets/imgs/dis2.jpg');
+}
+
+#slide-2::after {
+    background-image: url('../../assets/imgs/dis1.jpg');
+}
+
+#slide-3::after {
+    background-image: url('../../assets/imgs/dis3.jpg');
+}
+
+#slide-4::after {
+    background-image: url('../../assets/imgs/dis4.jpg');
+}
+
+.slide-body {
+    position: absolute;
+    width: 100%;
+    padding: 20px;
+    bottom: 10%;
+    color: #fff;
+    text-align: center;
+}
+
+.title {
+    font-size: 40px;
+    margin-bottom: 30px;
+}
+
+.detail {
+    font-size: 20px;
+    line-height: 1.45;
+    margin-bottom: 30px;
+}
+
+.language-slide-body {
+    // เว้นพื้นที่ให้โลโก้ iPSU ในภาพพื้นหลังอ่านได้ชัดเจน
+    top: calc(50% + clamp(24px, 5vh, 42px));
+    bottom: auto;
+    transform: translateY(-50%);
+}
+
+.language-card {
+    width: min(100%, 360px);
+    margin: 0 auto;
+    padding: 24px 20px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 24px;
+    background: rgba(0, 43, 84, 0.78);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(12px);
+
+    .title {
+        margin-bottom: 8px;
+        font-size: 30px;
+    }
+
+    .detail {
+        margin: 0 0 20px;
+        font-size: 15px;
+        color: rgba(255, 255, 255, 0.82);
+    }
+}
+
+.language-options {
+    display: grid;
+    gap: 10px;
+}
+
+.language-option {
+    width: 100%;
+    min-height: 58px;
+    padding: 10px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    display: grid;
+    grid-template-columns: 42px 1fr 24px;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+
+    .language-code {
+        width: 42px;
+        height: 34px;
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.16);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+    }
+
+    .language-name {
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    ion-icon {
+        font-size: 22px;
+        color: transparent;
+    }
+
+    &.selected {
+        border-color: rgba(125, 211, 252, 0.9);
+        background: rgba(2, 132, 199, 0.38);
+        box-shadow: 0 0 0 1px rgba(125, 211, 252, 0.2);
+
+        ion-icon {
+            color: #7dd3fc;
+        }
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+.language-selected-hint {
+    display: block;
+    margin-top: 14px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+@media (max-height: 600px) {
+    .language-slide-body {
+        top: calc(50% + 18px);
+    }
+
+    .language-card {
+        padding-top: 18px;
+        padding-bottom: 16px;
+    }
+
+    .language-option {
+        min-height: 50px;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+    .language-slide-body {
+        top: auto;
+        bottom: 24px;
+        transform: none;
+    }
+
+    .language-card {
+        width: min(82%, 430px);
+        padding: 12px 14px 10px;
+        border-radius: 18px;
+
+        .title {
+            margin-bottom: 2px;
+            font-size: 24px;
+        }
+
+        .detail {
+            margin-bottom: 9px;
+            font-size: 12px;
+        }
+    }
+
+    .language-options {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .language-option {
+        min-height: 44px;
+        padding: 6px 9px;
+        grid-template-columns: 32px 1fr 18px;
+        gap: 7px;
+        border-radius: 12px;
+
+        .language-code {
+            width: 32px;
+            height: 28px;
+            font-size: 10px;
+        }
+
+        .language-name {
+            font-size: 13px;
+        }
+
+        ion-icon {
+            font-size: 18px;
+        }
+    }
+
+    .language-selected-hint {
+        margin-top: 6px;
+        font-size: 10px;
+    }
+
+    #slide-4 .slide-body {
+        width: min(68%, 380px);
+        left: 50%;
+        bottom: 28px;
+        padding: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 18px;
+        background: rgba(0, 43, 84, 0.78);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+        backdrop-filter: blur(8px);
+        transform: translateX(-50%);
+
+        .title {
+            margin-bottom: 7px;
+            font-size: 26px;
+            line-height: 1.15;
+        }
+
+        .detail {
+            margin-bottom: 10px;
+            font-size: 13px;
+            line-height: 1.35;
+        }
+
+        ion-button {
+            min-height: 36px;
+            margin: 0;
+            font-size: 13px;
+        }
+    }
+}

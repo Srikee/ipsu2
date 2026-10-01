@@ -1,0 +1,154 @@
+<ion-header class="ion-no-border info-header">
+    <ion-toolbar class="info-toolbar">
+        <ion-title class="page-title">
+            <span class="main-title">{{ ipsu.T('information.title') }}</span>
+        </ion-title>
+
+        <ion-buttons slot="end" class="header-actions" *ngIf="ipsu.auth.status">
+            <!-- Search Toggle Button -->
+            <button type="button" class="profile-header-action" (click)="toggleSearch()"
+                [class.active]="isSearchOpen || searchTerm.length > 0"
+                [attr.aria-label]="isSearchOpen ? ipsu.T('common.close_search') : ipsu.T('common.search_services')">
+                <ion-icon [name]="isSearchOpen ? 'close-outline' : 'search-outline'"></ion-icon>
+            </button>
+
+            <!-- Refresh Button -->
+            <button type="button" class="profile-header-action btn-refresh" (click)="LoadData(true)"
+                [class.spinning]="isLoading" [attr.aria-label]="ipsu.T('common.refresh')">
+                <ion-icon name="sync-outline"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+
+    <!-- FIXED HEADER BODY: USER PROFILE STRIP & SEARCH BAR (แสดงเมื่อล็อกอินแล้วเท่านั้น) -->
+    <ion-toolbar class="info-fixed-toolbar" *ngIf="ipsu.auth.status">
+        <div class="header-fixed-body">
+            <!-- 1. COMPACT USER IDENTITY BAR -->
+            <section class="user-strip">
+                <div class="user-strip-left">
+                    <img class="user-avatar" [src]="profileImageUrl" alt="Avatar">
+                    <div class="user-info">
+                        <span class="user-greeting">{{ displayName }}</span>
+                        <span class="user-sub">{{ displayId }} • {{ userGroup === 'student' ? ipsu.T('information.student') : ipsu.T('information.staff') }}</span>
+                    </div>
+                </div>
+                <div class="user-strip-right">
+                    <span class="term-pill">{{ currentTermText }}</span>
+                </div>
+            </section>
+
+            <!-- 2. SEARCH BAR (แสดงเฉพาะเมื่อกดปุ่มค้นหา) -->
+            <div class="search-wrap animated-search" *ngIf="isSearchOpen || searchTerm.length > 0">
+                <ion-icon name="search-outline" class="search-icon"></ion-icon>
+                <input type="text" class="search-input" [(ngModel)]="searchTerm" (input)="onSearchChange()"
+                    [placeholder]="ipsu.T('information.search_placeholder')">
+                <button type="button" class="btn-clear" *ngIf="searchTerm" (click)="clearSearch()">
+                    <ion-icon name="close-circle"></ion-icon>
+                </button>
+            </div>
+        </div>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="info-content">
+
+    <!-- Native Pull-To-Refresh (เมื่อล็อกอินแล้ว) -->
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)" *ngIf="ipsu.auth.status">
+        <ion-refresher-content pullingIcon="chevron-down-circle-outline" refreshingSpinner="crescent">
+        </ion-refresher-content>
+    </ion-refresher>
+
+    <!-- Logged-in Content -->
+    <div class="info-container" *ngIf="ipsu.auth.status">
+
+        <!-- Initial loading placeholder (แสดงเมื่อยังไม่มีข้อมูลใน Cache) -->
+        <div class="information-skeleton" *ngIf="isLoading && sections.length === 0 && !isComingSoon && !searchTerm" aria-hidden="true">
+            <section class="services-section skeleton-section" *ngFor="let section of [1, 2, 3]">
+                <div class="section-header skeleton-header">
+                    <ion-skeleton-text [animated]="true" class="skeleton-section-title"></ion-skeleton-text>
+                    <ion-skeleton-text [animated]="true" class="skeleton-section-count"></ion-skeleton-text>
+                </div>
+
+                <div class="services-grid">
+                    <div class="service-card skeleton-service" *ngFor="let item of [1, 2, 3, 4]">
+                        <ion-skeleton-text [animated]="true" class="skeleton-service-icon"></ion-skeleton-text>
+                        <ion-skeleton-text [animated]="true" class="skeleton-service-title"></ion-skeleton-text>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 3. SEARCH RESULTS VIEW (แสดงเมื่อมีคำค้นหา) -->
+        <section class="services-section" *ngIf="searchTerm">
+            <div class="section-header">
+                <div class="header-left">
+                    <h2 class="section-title">{{ ipsu.T('information.search_results') }}</h2>
+                </div>
+                <span class="section-desc">{{ ipsu.T('common.items_found', { count: searchResults.length }) }}</span>
+            </div>
+
+            <div class="services-grid" *ngIf="searchResults.length > 0">
+                <div *ngFor="let s of searchResults" class="service-card" (click)="OpenPage(s)">
+                    <div class="service-icon-box" [style.background]="s.gradient">
+                        <ion-icon [name]="s.iconName"></ion-icon>
+                    </div>
+                    <span class="service-title">{{ ipsu.Localized(s, 'title') }}</span>
+                </div>
+            </div>
+
+            <div class="empty-search" *ngIf="searchResults.length === 0">
+                <ion-icon name="search-outline" class="empty-icon"></ion-icon>
+                <p class="empty-text">{{ ipsu.T('information.no_results', { query: searchTerm }) }}</p>
+                <button type="button" class="btn-reset-search" (click)="clearSearch(true)">{{ ipsu.T('information.show_all') }}</button>
+            </div>
+        </section>
+
+        <!-- 6. CATEGORIZED SECTIONS (การ์ดตามหมวดหมู่ แต่ละการ์ดเป็น 4-COLUMN GRID) -->
+        <ng-container *ngIf="!searchTerm && sections.length > 0">
+            <section class="services-section" *ngFor="let sec of sections">
+                <div class="section-header">
+                    <div class="header-left">
+                        <h2 class="section-title">{{ ipsu.Localized(sec, 'title') }}</h2>
+                    </div>
+                    <span class="section-desc">{{ ipsu.T('common.services_count', { count: sec.items.length }) }}</span>
+                </div>
+
+                <div class="services-grid">
+                    <div *ngFor="let s of sec.items" class="service-card" (click)="OpenPage(s)">
+                        <div class="service-icon-box" [style.background]="s.gradient">
+                            <ion-icon [name]="s.iconName"></ion-icon>
+                        </div>
+                        <span class="service-title">{{ ipsu.Localized(s, 'title') }}</span>
+                    </div>
+                </div>
+            </section>
+        </ng-container>
+
+        <!-- 7. COMING SOON CARD (สำหรับกลุ่ม STAFF) -->
+        <section class="coming-soon-card" *ngIf="!searchTerm && isComingSoon">
+            <div class="coming-soon-icon-box">
+                <ion-icon name="hourglass-outline"></ion-icon>
+            </div>
+            <h2 class="coming-soon-title">{{ ipsu.T('information.coming_soon_title') }}</h2>
+            <p class="coming-soon-sub">{{ ipsu.T('information.coming_soon_subtitle') }}</p>
+            <span class="coming-soon-desc">{{ ipsu.T('information.coming_soon_description') }}</span>
+        </section>
+
+    </div>
+
+    <!-- Not Logged In Guest State (เหมือนแท็บข้อความ/โปรไฟล์) -->
+    <div class="guest-wrap" *ngIf="!ipsu.auth.status">
+        <div class="guest-card">
+            <div class="guest-icon-box">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+            </div>
+            <h3>{{ ipsu.T('information.login_title') }}</h3>
+            <p>{{ ipsu.T('information.login_description') }}</p>
+            <button type="button" class="btn-guest-login" (click)="promptLogin()">
+                <ion-icon name="log-in-outline"></ion-icon>
+                <span>{{ ipsu.T('menu.login') }}</span>
+            </button>
+        </div>
+    </div>
+
+</ion-content>

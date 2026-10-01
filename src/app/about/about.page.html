@@ -1,0 +1,107 @@
+<ion-header class="ion-no-border">
+    <ion-toolbar color="psu">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/tabs/home" text=""></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ ipsu.T('about.title') }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="about-content">
+    <div class="about-container">
+
+        <!-- 1. HERO SECTION: BRAND & VERSION -->
+        <div class="about-hero">
+            <div class="app-icon-wrapper">
+                <img [src]="appImageUrl" (error)="useLocalAppIcon()" alt="iPSU Logo" class="app-icon-img">
+                <div class="app-icon-glow"></div>
+            </div>
+
+            <h1 class="app-title">{{ ipsu.Localized(appInfo, 'app_name') || 'iPSU Pattani' }}</h1>
+            <p class="app-tagline">
+                {{ ipsu.T('about.tagline') }}
+            </p>
+
+            <!-- Version Card Pill -->
+            <div class="version-pill">
+                <span class="version-text">{{ ipsu.T('about.version', { version: appVersion, build: buildNumber }) }}</span>
+                <span class="status-badge">
+                    <span class="status-dot"></span> {{ ipsu.T('about.latest') }}
+                </span>
+            </div>
+
+            <button type="button" class="btn-check-update" [disabled]="isCheckingUpdate" (click)="checkUpdate()">
+                <ion-icon [name]="isCheckingUpdate ? 'sync' : 'refresh-outline'" [class.spin]="isCheckingUpdate"></ion-icon>
+                <span>{{ isCheckingUpdate ? ipsu.T('about.checking') : ipsu.T('about.check_update') }}</span>
+            </button>
+        </div>
+
+        <!-- 2. DEVELOPMENT & CREDITS -->
+        <div class="about-section">
+            <div class="section-heading">
+                <ion-icon name="code-slash"></ion-icon>
+                <span>{{ ipsu.T('about.development') }}</span>
+            </div>
+
+            <div class="info-card">
+                <div class="info-row">
+                    <div class="row-left">
+                        <span class="label">{{ ipsu.T('about.developed_by') }}</span>
+                        <span class="value">{{ ipsu.Localized(appInfo, 'department') || ipsu.T('about.maintainer') }}</span>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="row-left">
+                        <span class="label">{{ ipsu.T('about.institution') }}</span>
+                        <span class="value">{{ ipsu.Localized(appInfo, 'organization') || ipsu.T('about.university') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. OFFICIAL LINKS & CONTACT -->
+        <div class="about-section">
+            <div class="section-heading">
+                <ion-icon name="link-outline"></ion-icon>
+                <span>{{ ipsu.T('about.links') }}</span>
+            </div>
+
+            <div class="links-card">
+                <div class="link-item" (click)="openUrl(websiteUrl)">
+                    <div class="link-left">
+                        <div class="link-icon web">
+                            <ion-icon name="globe-outline"></ion-icon>
+                        </div>
+                        <div class="link-text">
+                            <span class="link-title">{{ ipsu.T('about.website') }}</span>
+                            <span class="link-desc">ipsu.pn.psu.ac.th</span>
+                        </div>
+                    </div>
+                    <ion-icon name="chevron-forward-outline" class="link-arrow"></ion-icon>
+                </div>
+
+                <div class="link-item" (click)="openUrl('mailto:' + supportEmail)">
+                    <div class="link-left">
+                        <div class="link-icon email">
+                            <ion-icon name="mail-outline"></ion-icon>
+                        </div>
+                        <div class="link-text">
+                            <span class="link-title">{{ ipsu.T('about.support') }}</span>
+                            <span class="link-desc">{{ supportEmail }}</span>
+                        </div>
+                    </div>
+                    <ion-icon name="chevron-forward-outline" class="link-arrow"></ion-icon>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. COPYRIGHT FOOTER -->
+        <div class="about-footer">
+            <p class="copyright">
+                © {{ currentYear }} Prince of Songkla University, Pattani Campus.<br>
+                All Rights Reserved.
+            </p>
+        </div>
+
+    </div>
+</ion-content>

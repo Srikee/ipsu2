@@ -1,0 +1,364 @@
+:host {
+    --accent: #0284c7;
+    --page-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --bubble-bg: #f1f5f9;
+    --input-bg: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border-light: rgba(0, 0, 0, 0.06);
+    --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.05);
+    font-family: 'Stidti', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.detail-header {
+    background: linear-gradient(135deg, #002b54 0%, #003C71 60%, #005696 100%);
+    box-shadow: 0 4px 18px rgba(0, 43, 84, 0.18);
+
+    .detail-toolbar {
+        --background: transparent;
+        --color: #ffffff;
+        --border-width: 0;
+        --min-height: 52px;
+        padding: max(4px, var(--ion-safe-area-top, env(safe-area-inset-top, 0px))) 6px 0;
+    }
+
+    .detail-title {
+        font-size: 17px;
+        font-weight: 700;
+    }
+}
+
+.detail-header-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    ion-icon {
+        font-size: 24px;
+    }
+
+    &:active {
+        background: rgba(255, 255, 255, 0.14);
+    }
+
+    &.spinning ion-icon {
+        animation: spin 1s linear infinite;
+    }
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.detail-content {
+    --background: var(--page-bg);
+}
+
+.detail-container {
+    padding: 14px 14px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detail-skeleton {
+    background: var(--card-bg);
+    border-radius: 18px;
+    padding: 16px;
+
+    ion-skeleton-text {
+        height: 13px;
+        margin: 0 0 10px;
+        border-radius: 5px;
+    }
+}
+
+.comments-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 18px;
+    box-shadow: var(--shadow-card);
+    padding: 14px 12px 6px;
+}
+
+.comments-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 2px 12px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+
+    .comments-count {
+        font-size: 12px;
+        font-weight: 700;
+        padding: 1px 8px;
+        border-radius: 999px;
+        color: var(--accent);
+        background: rgba(2, 132, 199, 0.12);
+    }
+}
+
+.comments-empty {
+    margin: 4px 2px 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.comment-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    &.editing .comment-bubble {
+        box-shadow: 0 0 0 2px var(--accent);
+    }
+}
+
+.comment-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.comment-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.comment-bubble {
+    display: inline-block;
+    max-width: 100%;
+    padding: 8px 12px;
+    border-radius: 16px;
+    background: var(--bubble-bg);
+
+    .comment-author {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+    }
+
+    .author-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .group-badge {
+        flex-shrink: 0;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 5px;
+        color: #0369a1;
+        background: rgba(2, 132, 199, 0.12);
+
+        &.staff {
+            color: #047857;
+            background: rgba(16, 185, 129, 0.14);
+        }
+    }
+
+    .comment-text {
+        margin: 3px 0 0;
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: var(--text-primary);
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+}
+
+.comment-meta {
+    display: flex;
+    gap: 4px;
+    margin: 3px 0 0 10px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.btn-comment-more {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+
+    ion-icon {
+        font-size: 18px;
+    }
+
+    &:active {
+        background: rgba(148, 163, 184, 0.18);
+    }
+}
+
+.comment-footer {
+    background: var(--card-bg);
+    border-top: 1px solid var(--border-light);
+    padding-bottom: var(--ion-safe-area-bottom, 0px);
+}
+
+.editing-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+
+    span {
+        flex: 1;
+    }
+
+    button {
+        border: none;
+        background: transparent;
+        color: var(--text-secondary);
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 2px 4px;
+        cursor: pointer;
+    }
+}
+
+.comment-composer {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    padding: 8px 10px 8px 14px;
+
+    .comment-input {
+        flex: 1;
+        min-height: 40px;
+        max-height: 120px;
+        padding: 9px 14px;
+        border-radius: 20px;
+        border: 1px solid transparent;
+        background: var(--input-bg);
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 13.5px;
+        line-height: 1.45;
+        resize: none;
+        outline: none;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+
+        &:focus {
+            border-color: var(--accent);
+        }
+    }
+
+    .comment-counter {
+        align-self: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-muted);
+
+        &.over {
+            color: #ef4444;
+        }
+    }
+
+    .btn-send {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #005696 0%, #0284c7 100%);
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        ion-icon {
+            font-size: 19px;
+        }
+
+        &:disabled {
+            background: var(--input-bg);
+            color: var(--text-muted);
+            cursor: default;
+        }
+    }
+}
+
+:host-context(.dark) {
+    --accent: #38bdf8;
+    --page-bg: #0b1120;
+    --card-bg: #1e293b;
+    --bubble-bg: #263447;
+    --input-bg: #263447;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border-light: rgba(255, 255, 255, 0.08);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.24);
+
+    .comments-title .comments-count {
+        background: rgba(56, 189, 248, 0.14);
+    }
+
+    .comment-bubble .group-badge {
+        color: #7dd3fc;
+        background: rgba(56, 189, 248, 0.14);
+
+        &.staff {
+            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.16);
+        }
+    }
+}

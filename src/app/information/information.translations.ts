@@ -1,0 +1,42 @@
+import type { TranslationDictionary } from '../services/translation.types';
+
+export const INFORMATION_TRANSLATIONS: TranslationDictionary = {
+    th: {
+        'information.title': 'สารสนเทศ',
+        'information.student': 'นักศึกษา',
+        'information.staff': 'บุคลากร',
+        'information.user': 'ผู้ใช้งาน',
+        'information.term': 'ภาคเรียน {{term}}/{{year}}',
+        'information.search_placeholder': 'ค้นหาบริการสารสนเทศ เช่น ตารางเรียน ทุน หอพัก',
+        'information.search_results': 'ผลการค้นหา',
+        'information.no_results': 'ไม่พบบริการที่ตรงกับ "{{query}}"',
+        'information.show_all': 'ดูบริการทั้งหมด',
+        'information.coming_soon_title': 'เร็ว ๆ นี้',
+        'information.coming_soon_subtitle': 'ระบบสารสนเทศสำหรับบุคลากร',
+        'information.coming_soon_description': 'ระบบอยู่ระหว่างการเตรียมความพร้อมและจะเปิดให้บริการเร็ว ๆ นี้',
+        'information.login_title': 'เข้าสู่ระบบเพื่อดูสารสนเทศ',
+        'information.login_description': 'กรุณาลงชื่อเข้าใช้ด้วยบัญชี PSU Passport เพื่อเข้าถึงบริการสารสนเทศ ตารางเรียน และข้อมูลเฉพาะบุคคล',
+        'information.login_required': 'กรุณาเข้าสู่ระบบก่อนใช้งาน',
+        'information.general_services': 'บริการทั่วไป',
+        'information.not_available': 'เมนูนี้ยังไม่เปิดให้บริการ',
+    },
+    en: {
+        'information.title': 'Information',
+        'information.student': 'Student',
+        'information.staff': 'Staff',
+        'information.user': 'User',
+        'information.term': 'Semester {{term}}/{{year}}',
+        'information.search_placeholder': 'Search services, such as schedule, scholarships, or dormitory',
+        'information.search_results': 'Search results',
+        'information.no_results': 'No services match "{{query}}"',
+        'information.show_all': 'View all services',
+        'information.coming_soon_title': 'Coming soon',
+        'information.coming_soon_subtitle': 'Information services for staff',
+        'information.coming_soon_description': 'This service is being prepared and will be available soon.',
+        'information.login_title': 'Sign in to view information',
+        'information.login_description': 'Sign in with your PSU Passport account to access information services, schedules, and personal data.',
+        'information.login_required': 'Please sign in before using this service.',
+        'information.general_services': 'General services',
+        'information.not_available': 'This service is not available yet.',
+    }
+};

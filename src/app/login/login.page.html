@@ -1,0 +1,105 @@
+<ion-header class="ion-no-border">
+    <ion-toolbar color="psu">
+        <ion-title>{{ ipsu.T('login.title') }}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="Close()" class="btn-close-modal">
+                <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="login-content" [scrollY]="true" [forceOverscroll]="false">
+    <div class="login-container">
+
+        <!-- 1. BRAND HERO HEADER -->
+        <div class="login-hero">
+            <div class="brand-logo-wrap">
+                <img src="assets/imgs/ipsu-2.png" alt="iPSU" class="brand-logo" onerror="this.src='assets/imgs/icon.png'">
+            </div>
+            <h1 class="welcome-title">{{ ipsu.T('login.welcome') }}</h1>
+            <p class="welcome-subtitle">{{ ipsu.T('login.subtitle') }}</p>
+        </div>
+
+        <!-- 2. PSU PASSPORT SSO (RECOMMENDED OPTION) -->
+        <div class="sso-section">
+            <button type="button" class="btn-sso-passport" (click)="LoginSSO()">
+                <div class="sso-icon-wrap">
+                    <img src="assets/imgs/icon-psu.jpg" alt="PSU Passport" class="sso-logo">
+                </div>
+                <div class="sso-text">
+                    <span class="sso-label">{{ ipsu.T('login.sign_in_with') }}</span>
+                    <span class="sso-brand">PSU Passport</span>
+                </div>
+                <span class="sso-badge">{{ ipsu.T('login.recommended') }}</span>
+            </button>
+            <p class="sso-hint">
+                <ion-icon name="shield-checkmark-outline"></ion-icon>
+                <span>{{ ipsu.T('login.sso_hint') }}</span>
+            </p>
+        </div>
+
+        <!-- 3. DIVIDER -->
+        <div class="login-divider">
+            <span class="divider-line"></span>
+            <span class="divider-text">{{ ipsu.T('login.or_password') }}</span>
+            <span class="divider-line"></span>
+        </div>
+
+        <!-- 4. MANUAL CREDENTIALS FORM -->
+        <div class="login-form-card">
+            <div class="input-group">
+                <label class="input-label">{{ ipsu.T('login.username') }}</label>
+                <div class="modern-input-box">
+                    <ion-icon name="person-outline" class="input-prefix-icon"></ion-icon>
+                    <ion-input
+                        type="text"
+                        inputmode="text"
+                        autocomplete="username"
+                        [placeholder]="ipsu.T('login.username_placeholder')"
+                        [(ngModel)]="auth.username"
+                        (ionFocus)="onInputFocus($event)"
+                        [clearInput]="true">
+                    </ion-input>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">{{ ipsu.T('login.password') }}</label>
+                <div class="modern-input-box">
+                    <ion-icon name="lock-closed-outline" class="input-prefix-icon"></ion-icon>
+                    <ion-input
+                        [type]="showPassword ? 'text' : 'password'"
+                        autocomplete="current-password"
+                        [placeholder]="ipsu.T('login.password_placeholder')"
+                        [(ngModel)]="auth.password"
+                        (ionFocus)="onInputFocus($event)"
+                        (keyup.enter)="Login()">
+                    </ion-input>
+                    <button type="button" class="btn-toggle-password" (click)="showPassword = !showPassword" aria-label="Toggle password">
+                        <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <button
+                type="button"
+                class="btn-primary-login"
+                [disabled]="!auth.username || !auth.password"
+                (click)="Login()">
+                <ion-icon name="log-in-outline"></ion-icon>
+                <span>{{ ipsu.T('login.sign_in') }}</span>
+            </button>
+        </div>
+
+        <!-- 5. HELPFUL FOOTER -->
+        <div class="login-footer">
+            <p class="footer-note">
+                {{ ipsu.T('menu.copyright') }}
+            </p>
+        </div>
+
+    </div>
+</ion-content>
+

@@ -1,0 +1,400 @@
+.login-content {
+    --background: #f4f6fb;
+    --overflow: auto;
+
+    &::part(scroll) {
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
+        scroll-padding-top: 12px;
+        scroll-padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+.login-container {
+    padding: 16px 20px calc(80px + env(safe-area-inset-bottom, 0px)) 20px;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   1. HERO SECTION
+   ========================================================================== */
+.login-hero {
+    text-align: center;
+    padding: 20px 0 16px 0;
+
+    .brand-logo-wrap {
+        width: 160px;
+        margin: 0 auto 12px auto;
+
+        .brand-logo {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0, 60, 113, 0.15));
+        }
+    }
+
+    .welcome-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #003C71;
+        letter-spacing: -0.3px;
+        margin: 0 0 6px 0;
+    }
+
+    .welcome-subtitle {
+        font-size: 13px;
+        color: #64748b;
+        margin: 0;
+        line-height: 1.4;
+    }
+}
+
+/* ==========================================================================
+   2. PSU PASSPORT SSO (FEATURED BUTTON)
+   ========================================================================== */
+.sso-section {
+    margin-bottom: 22px;
+
+    .btn-sso-passport {
+        width: 100%;
+        background: #ffffff;
+        border: 1.5px solid rgba(0, 60, 113, 0.18);
+        border-radius: 18px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        box-shadow: 0 8px 24px rgba(0, 60, 113, 0.08);
+        cursor: pointer;
+        transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+        text-align: left;
+
+        &:hover {
+            border-color: #003C71;
+            box-shadow: 0 10px 28px rgba(0, 60, 113, 0.15);
+        }
+
+        &:active {
+            transform: scale(0.98);
+            background: #f8fafc;
+        }
+
+        .sso-icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid rgba(0, 60, 113, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            padding: 3px;
+
+            .sso-logo {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                border-radius: 8px;
+            }
+        }
+
+        .sso-text {
+            flex: 1;
+
+            .sso-label {
+                display: block;
+                font-size: 11.5px;
+                color: #64748b;
+                font-weight: 500;
+                margin-bottom: 5px;
+                line-height: 1.2;
+            }
+
+            .sso-brand {
+                display: block;
+                font-size: 15px;
+                font-weight: 800;
+                color: #003C71;
+                letter-spacing: -0.2px;
+                line-height: 1.2;
+            }
+        }
+
+        .sso-badge {
+            background: #e8f1ff;
+            color: #0056b3;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            letter-spacing: 0.4px;
+        }
+    }
+
+    .sso-hint {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        font-size: 11.5px;
+        color: #64748b;
+        margin: 10px 0 0 0;
+
+        ion-icon {
+            font-size: 14px;
+            color: #10b981;
+        }
+    }
+}
+
+/* ==========================================================================
+   3. DIVIDER
+   ========================================================================== */
+.login-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    .divider-line {
+        flex: 1;
+        height: 1px;
+        background: #e2e8f0;
+    }
+
+    .divider-text {
+        font-size: 11.5px;
+        color: #94a3b8;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+}
+
+/* ==========================================================================
+   4. MANUAL CREDENTIALS FORM
+   ========================================================================== */
+.login-form-card {
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 22px 18px 20px 18px;
+    box-shadow: 0 4px 20px rgba(0, 20, 50, 0.05);
+    border: 1px solid rgba(0, 60, 113, 0.06);
+
+    .input-group {
+        margin-bottom: 16px;
+
+        .input-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+            padding-left: 2px;
+        }
+
+        .modern-input-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 3px 12px;
+            transition: all 0.2s ease;
+
+            &:focus-within {
+                border-color: #003C71;
+                background: #ffffff;
+                box-shadow: 0 0 0 3px rgba(0, 60, 113, 0.1);
+
+                .input-prefix-icon {
+                    color: #003C71;
+                }
+            }
+
+            .input-prefix-icon {
+                font-size: 18px;
+                color: #94a3b8;
+                flex-shrink: 0;
+                transition: color 0.2s ease;
+            }
+
+            ion-input {
+                --padding-start: 0;
+                --padding-end: 0;
+                --padding-top: 10px;
+                --padding-bottom: 10px;
+                font-size: 14px;
+                font-weight: 500;
+                color: #1e293b;
+            }
+
+            .btn-toggle-password {
+                background: transparent;
+                border: none;
+                color: #94a3b8;
+                font-size: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                padding: 4px;
+                transition: color 0.2s ease;
+
+                &:active {
+                    color: #003C71;
+                }
+            }
+        }
+    }
+
+    .btn-primary-login {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 13px 20px;
+        margin-top: 8px;
+        background: linear-gradient(135deg, #003C71 0%, #055ba5 100%);
+        border: none;
+        border-radius: 14px;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 6px 18px rgba(0, 60, 113, 0.25);
+        transition: all 0.2s ease;
+
+        ion-icon {
+            font-size: 19px;
+        }
+
+        &:active {
+            transform: scale(0.98);
+            box-shadow: 0 3px 10px rgba(0, 60, 113, 0.2);
+        }
+
+        &:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+    }
+}
+
+/* ==========================================================================
+   5. FOOTER
+   ========================================================================== */
+.login-footer {
+    text-align: center;
+    margin-top: 24px;
+
+    .footer-note {
+        font-size: 11.5px;
+        color: #94a3b8;
+        line-height: 1.5;
+        margin: 0;
+    }
+}
+
+/* ==========================================================================
+   6. DARK MODE SUPPORT
+   ========================================================================== */
+:host-context(.dark) {
+    .login-content {
+        --background: #12161c;
+    }
+
+    .login-hero {
+        .welcome-title {
+            color: #64b5f6;
+        }
+        .welcome-subtitle {
+            color: #94a3b8;
+        }
+    }
+
+    .sso-section {
+        .btn-sso-passport {
+            background: #1c222b;
+            border-color: rgba(255, 255, 255, 0.12);
+
+            .sso-icon-wrap {
+                background: #ffffff;
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+
+            .sso-text {
+                .sso-label {
+                    color: #94a3b8;
+                }
+                .sso-brand {
+                    color: #e2e8f0;
+                }
+            }
+
+            .sso-badge {
+                background: rgba(100, 181, 246, 0.15);
+                color: #90caf9;
+            }
+        }
+
+        .sso-hint {
+            color: #94a3b8;
+        }
+    }
+
+    .login-divider {
+        .divider-line {
+            background: #27303d;
+        }
+        .divider-text {
+            color: #64748b;
+        }
+    }
+
+    .login-form-card {
+        background: #1c222b;
+        border-color: rgba(255, 255, 255, 0.06);
+
+        .input-group {
+            .input-label {
+                color: #cbd5e1;
+            }
+
+            .modern-input-box {
+                background: #252e3a;
+                border-color: #334155;
+
+                &:focus-within {
+                    border-color: #64b5f6;
+                    background: #1e2632;
+                    box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.15);
+
+                    .input-prefix-icon {
+                        color: #64b5f6;
+                    }
+                }
+
+                ion-input {
+                    color: #f1f5f9;
+                }
+            }
+        }
+
+        .btn-primary-login {
+            background: linear-gradient(135deg, #004b8d 0%, #0277bd 100%);
+        }
+    }
+
+    .login-footer .footer-note {
+        color: #64748b;
+    }
+}
