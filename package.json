@@ -56,6 +56,7 @@
         "cordova-plugin-inappbrowser": "^7.0.0",
         "cordova-plugin-ionic-keyboard": "^2.2.0",
         "cordova-plugin-ionic-webview": "^5.0.0",
+        "cordova-plugin-ipsu-android-badge": "file:cordova-plugin-ipsu-android-badge",
         "cordova-plugin-ipsu-deeplink": "file:cordova-plugin-ipsu-deeplink",
         "cordova-plugin-splashscreen": "5.0.2",
         "cordova-plugin-statusbar": "^2.4.2",
@@ -83,6 +84,7 @@
             "cordova-plugin-inappbrowser": {},
             "cordova-plugin-ionic-keyboard": {},
             "onesignal-cordova-plugin": {},
+            "cordova-plugin-ipsu-android-badge": {},
             "cordova-plugin-fingerprint-aio": {
                 "FACEID_USAGE_DESCRIPTION": "iPSU ใช้ Face ID เพื่อปลดล็อกแอปแทนการใส่รหัส PIN"
             },
