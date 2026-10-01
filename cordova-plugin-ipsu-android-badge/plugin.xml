@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-ipsu-android-badge"
+        version="1.0.0">
+    <name>iPSU Android Badge</name>
+    <description>Use the server unread count on OneSignal Android notifications.</description>
+    <license>MIT</license>
+
+    <platform name="android">
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <meta-data android:name="com.onesignal.NotificationServiceExtension"
+                       android:value="com.ipsu.cordova.badge.IpsuNotificationServiceExtension" />
+        </config-file>
+        <source-file src="src/android/IpsuNotificationServiceExtension.java"
+                     target-dir="app/src/main/java/com/ipsu/cordova/badge" />
+    </platform>
+</plugin>

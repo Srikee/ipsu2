@@ -1,0 +1,10 @@
+{
+  "name": "cordova-plugin-ipsu-android-badge",
+  "version": "1.0.0",
+  "description": "OneSignal Android notification count for iPSU",
+  "cordova": {
+    "id": "cordova-plugin-ipsu-android-badge",
+    "platforms": ["android"]
+  },
+  "license": "MIT"
+}
