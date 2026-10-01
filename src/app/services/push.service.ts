@@ -46,6 +46,11 @@ export class PushService {
             this.BindListeners();
             this.initialized = true;
 
+            // รีเฟรชยอดจริงเมื่อกลับจากพื้นหลัง (เช่น มี Push ระหว่างปิด WebView)
+            this.platform.resume.subscribe(() => {
+                void this.ipsu.RefreshUnreadMessageCount(true);
+            });
+
             // ขอ permission แจ้งเตือนจากผู้ใช้ (false = ใช้ native prompt ของระบบตรง ๆ
             // ไม่ผ่าน soft-prompt ของ OneSignal เอง)
             const accepted = await OneSignal.Notifications.requestPermission(false);
@@ -103,6 +108,7 @@ export class PushService {
                 const title = notification?.title || 'แจ้งเตือน';
                 const body = notification?.body || '';
                 this.ipsu.ShowToast(`${title}: ${body}`, 3000);
+                void this.ipsu.RefreshUnreadMessageCount(true);
 
                 // หมายเหตุ: ไม่ได้เรียก event.preventDefault() จึงปล่อยให้ noti ของระบบขึ้นตามปกติด้วย
                 // ถ้าอยากคุมเองแบบ toast อย่างเดียวไม่ให้ noti ระบบขึ้นซ้ำ ให้เรียก event.preventDefault()
@@ -116,6 +122,7 @@ export class PushService {
 
                 // ฝั่งที่ยิง push สามารถแนบ additional data เช่น { "route": "/main/announcement" } มาได้
                 const route = event?.notification?.additionalData?.route;
+                void this.ipsu.RefreshUnreadMessageCount(true);
                 if (route) {
                     this.ipsu.LinkTo(route);
                 }
